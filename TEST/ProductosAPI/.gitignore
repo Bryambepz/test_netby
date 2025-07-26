@@ -1,5 +1,5 @@
-TEST/ProductosAPI/.vs
-TEST/ProductosAPI/Core/obj
-TEST/ProductosAPI/Core/bin
-TEST/ProductosAPI/ProductosAPI/obj
-TEST/ProductosAPI/ProductosAPI/bin
+.vs
+Core/obj
+Core/bin
+ProductosAPI/obj
+ProductosAPI/bin
