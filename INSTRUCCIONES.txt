@@ -1,0 +1,2 @@
+## Crear tablas
+sqlcmd -S localhost -U sa -P zoaOj4a4iqP$opM#5Ka -i C:\Users\braya\OneDrive\Documentos\TRABAJOS\PRUEBA_NETBY\Script.sql
