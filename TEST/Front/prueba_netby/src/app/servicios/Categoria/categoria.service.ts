@@ -17,8 +17,12 @@ export class CategoriaService {
     return this.http.post<string>(this.url+'guardar', categoriaGuarda);
   }
 
-  obtenerCategorias(pagina: number, tamanio: number): Observable<RespuestaCategoria>{
+  obtenerCategoriasPaginacion(pagina: number, tamanio: number): Observable<RespuestaCategoria>{
     return this.http.get<RespuestaCategoria>(this.url+`getCategorias?pagina=${pagina}&paginaTamanio=${tamanio}`);
+  }
+
+  obtenerCategorias(): Observable<Categoria[]>{
+    return this.http.get<Categoria[]>(this.url+`getCategoriasAll`);
   }
 
 }

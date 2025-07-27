@@ -7,5 +7,5 @@ export interface ApiRespuesta<T> {
 export interface ErrorRespuesta {
     mensajeError: string;
     codigoRespuesta: number;
-    excepcion: any;
+    excepcion: string;
 }

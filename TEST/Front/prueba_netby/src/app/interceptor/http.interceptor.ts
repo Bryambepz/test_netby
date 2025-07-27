@@ -4,7 +4,7 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { catchError, map, tap, throwError } from 'rxjs';
-import { ApiRespuesta } from '../domain/apiRespuesta';
+import { ApiRespuesta, ErrorRespuesta } from '../domain/apiRespuesta';
 import Swal from 'sweetalert2';
 
 export const httpInterceptor: HttpInterceptorFn = (req, next) => {
@@ -35,12 +35,25 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => {
       return event;
     }),
     catchError((error: HttpErrorResponse) => {
-      Swal.fire({
-        title: 'Error',
-        text: error.message,
-        icon: 'error',
-      });
-      return throwError(() => error);
+      console.log("error atrapado", error);
+      var errorObj = error.error;
+      if ( errorObj.hayError ?? false ) {
+        const _errorResponse: ApiRespuesta<any> = errorObj;
+        console.log("error respuesta", _errorResponse);
+        
+        Swal.fire({
+          title: 'Error',
+          text: _errorResponse.error?.mensajeError ?? "Error en el servicio",
+          icon: 'error',
+        });
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'Se produjo un error no administrado',
+          icon: 'error',
+        });
+      }
+      return throwError(() => null);
     })
   );
 };

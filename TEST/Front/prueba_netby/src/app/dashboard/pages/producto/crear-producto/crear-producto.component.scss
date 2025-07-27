@@ -1,0 +1,39 @@
+.formulario-contenido {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.contenido {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    // width: 100%;
+    // background: red;
+}
+
+.contenido input {
+    width: 90%;
+}
+
+.contenido-img {
+    flex: 1;
+    // width: 50%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    // background: blue;
+    justify-content: center;
+    align-items: center;
+}
+
+label {
+    margin-bottom: 0.5rem;
+}
+
+.listado {
+    margin-bottom: 1rem;
+    width: '10%';
+}

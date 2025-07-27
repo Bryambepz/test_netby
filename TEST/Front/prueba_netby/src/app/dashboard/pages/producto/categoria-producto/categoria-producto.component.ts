@@ -67,7 +67,7 @@ export class CategoriaProductoComponent implements OnInit{
     console.log("la pagina", pagina);
     console.log("el tama;o", tamano);
     
-    this.categoriaService.obtenerCategorias(pagina, tamano).subscribe({
+    this.categoriaService.obtenerCategoriasPaginacion(pagina, tamano).subscribe({
       next: (value) => {
           this.totalCategorias = value.totalCategorias;
           this.categorias = value.categorias;
