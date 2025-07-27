@@ -11,7 +11,22 @@ export const routes: Routes = [
             },
             {
                 path: 'producto',
-                loadComponent: () => import('./dashboard/pages/producto/producto.component').then(t => t.ProductoComponent),
+                // redirectTo: 'productos-ver',
+                children: 
+                [
+                    {
+                        path: 'productos-crear',
+                        loadComponent: () => import('./dashboard/pages/producto/crear-producto/crear-producto.component').then(t => t.CrearProductoComponent),
+                    },
+                    {
+                        path: 'productos-ver',
+                        loadComponent: () => import('./dashboard/pages/producto/ver-producto/ver-producto.component').then(t => t.VerProductoComponent),
+                    },
+                    {
+                        path: 'productos-categorias',
+                        loadComponent: () => import('./dashboard/pages/producto/categoria-producto/categoria-producto.component').then(t => t.CategoriaProductoComponent),
+                    },
+                ],
             },
             {
                 path: 'transaccion',

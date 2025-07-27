@@ -2,11 +2,23 @@
     <aside class="sidebar">
         <nav>
             <a routerLink="home" routerLinkActive="active">Inicio</a>
-            <a routerLink="producto" routerLinkActive="active">Productos</a>
+
+            <a routerLink="producto" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+                Producto
+            </a>
+            <ul class="submenu">
+                <li><a routerLink="producto/productos-crear" routerLinkActive="active">Crear</a></li>
+                <li><a routerLink="producto/productos-ver" routerLinkActive="active">Ver</a></li>
+                <li><a routerLink="producto/productos-categorias" routerLinkActive="active">Categorias</a></li>
+            </ul>
+
+            <!-- <a routerLink="producto" routerLinkActive="active">Productos</a> -->
             <a routerLink="transaccion" routerLinkActive="active">Transacciones</a>
         </nav>
     </aside>
     <main class="content">
-        <router-outlet></router-outlet>
+        <div class="tarjeta-contenido">
+            <router-outlet></router-outlet>
+        </div>
     </main>
 </div>

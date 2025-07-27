@@ -1,0 +1,44 @@
+<div>
+    <h3>Crear Categoria</h3>
+    <form [formGroup]="categoriaForm" (ngSubmit)="guardarCategoria()" class="formulario-contenido">
+        <label for="nombre">Nombre</label>
+        <input type="text" placeholder="Nombre Categoria" formControlName="nombre">
+
+        <label for="estado">Estado</label>
+        <input type="checkbox" name="estado" id="estado-categoria" formControlName="estado">
+        <button type="submit" pButton pRipple label="GUARDAR" class="p-button-success"
+            [disabled]="!categoriaForm.valid">
+        </button>
+
+    </form>
+    <h3>Ver Categorias</h3>
+
+    <div class="card">
+        <p-table 
+        [value]="categorias" 
+        [paginator]="true"
+        [rows]="5"
+        [totalRecords]="totalCategorias"
+        [lazy]="true"
+        (onLazyLoad)="cargarCategorias($event)"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        [loading]="cargando"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width:25%">Nombre</th>
+                    <th style="width:25%">Estado</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-categoria>
+                <tr>
+                    <td>{{ categoria.nombre }}</td>
+                    <td>
+                        <input type="checkbox" [checked]="categoria.estado" disabled />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
