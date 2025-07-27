@@ -10,18 +10,24 @@ namespace ProductosAPI.Utils
 
         public Filtro(ILogger<Filtro> logger)
         {
-             _logger = logger;
+            _logger = logger;
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
             if (context.Result is ObjectResult objectResult)
             {
+                var codigoEstado = objectResult.StatusCode ?? 500;
+
                 var response = new ApiRespuesta<object>
                 {
                     HayError = false,
-                    Body = objectResult.Value,
-                    Error = null,
+                    Body = codigoEstado == 200 ? objectResult.Value : null,
+                    Error = codigoEstado != 200 ? new ErrorRespuesta
+                    {
+                        CodigoRespuesta = codigoEstado,
+                        MensajeError = objectResult.Value?.ToString() ?? "Error no Administrado",
+                    } : null,
                 };
 
                 context.Result = new ObjectResult(response)
@@ -45,7 +51,7 @@ namespace ProductosAPI.Utils
                 Error = new ErrorRespuesta
                 {
                     MensajeError = context.Exception.Message,
-                    Exception = context.Exception,
+                    Exception = context.Exception.StackTrace,
                     CodigoRespuesta = 500
                 }
             };

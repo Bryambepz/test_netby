@@ -7,10 +7,6 @@ namespace Core.BaseDatos;
 
 public partial class BaseDatosContext : DbContext
 {
-    public BaseDatosContext()
-    {
-    }
-
     public BaseDatosContext(DbContextOptions<BaseDatosContext> options)
         : base(options)
     {
@@ -20,16 +16,9 @@ public partial class BaseDatosContext : DbContext
 
     public virtual DbSet<Productos> Productos { get; set; }
 
-    public virtual DbSet<Rol> Rol { get; set; }
-
     public virtual DbSet<TipoTransaccion> TipoTransaccion { get; set; }
 
     public virtual DbSet<Transacciones> Transacciones { get; set; }
-
-    public virtual DbSet<Usuario> Usuario { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,23 +42,27 @@ public partial class BaseDatosContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CategoriaId).HasColumnName("CATEGORIA_ID");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(500)
+                .UseCollation("Latin1_General_CI_AS")
+                .HasColumnName("DESCRIPCION");
+            entity.Property(e => e.Imagen)
+                .HasMaxLength(250)
+                .UseCollation("Latin1_General_CI_AS")
+                .HasColumnName("IMAGEN");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(250)
                 .UseCollation("Latin1_General_CI_AS")
                 .HasColumnName("NOMBRE");
+            entity.Property(e => e.Precio)
+                .HasColumnType("decimal(6, 4)")
+                .HasColumnName("PRECIO");
+            entity.Property(e => e.Stock).HasColumnName("STOCK");
 
             entity.HasOne(d => d.Categoria).WithMany(p => p.Productos)
                 .HasForeignKey(d => d.CategoriaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PRODUCTO_CATEGORIA");
-        });
-
-        modelBuilder.Entity<Rol>(entity =>
-        {
-            entity.ToTable("ROL", "SUJETO");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Estado).HasColumnName("ESTADO");
         });
 
         modelBuilder.Entity<TipoTransaccion>(entity =>
@@ -101,7 +94,6 @@ public partial class BaseDatosContext : DbContext
                 .HasColumnName("PRECIO_UNITARIO");
             entity.Property(e => e.ProductoId).HasColumnName("PRODUCTO_ID");
             entity.Property(e => e.TipoTransaccionId).HasColumnName("TIPO_TRANSACCION_ID");
-            entity.Property(e => e.UsuarioId).HasColumnName("USUARIO_ID");
 
             entity.HasOne(d => d.Producto).WithMany(p => p.Transacciones)
                 .HasForeignKey(d => d.ProductoId)
@@ -112,37 +104,6 @@ public partial class BaseDatosContext : DbContext
                 .HasForeignKey(d => d.TipoTransaccionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TRANSACCION_TIPO_TRANS");
-
-            entity.HasOne(d => d.Usuario).WithMany(p => p.Transacciones)
-                .HasForeignKey(d => d.UsuarioId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TRANSACCION_USUARIO");
-        });
-
-        modelBuilder.Entity<Usuario>(entity =>
-        {
-            entity.ToTable("USUARIO", "SUJETO");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Clave)
-                .HasMaxLength(250)
-                .UseCollation("Latin1_General_CI_AS")
-                .HasColumnName("CLAVE");
-            entity.Property(e => e.Estado).HasColumnName("ESTADO");
-            entity.Property(e => e.Nombre)
-                .HasMaxLength(250)
-                .UseCollation("Latin1_General_CI_AS")
-                .HasColumnName("NOMBRE");
-            entity.Property(e => e.RolId).HasColumnName("ROL_ID");
-            entity.Property(e => e.Usuario1)
-                .HasMaxLength(250)
-                .UseCollation("Latin1_General_CI_AS")
-                .HasColumnName("USUARIO");
-
-            entity.HasOne(d => d.Rol).WithMany(p => p.Usuario)
-                .HasForeignKey(d => d.RolId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_USUARIO_ROL");
         });
 
         OnModelCreatingPartial(modelBuilder);

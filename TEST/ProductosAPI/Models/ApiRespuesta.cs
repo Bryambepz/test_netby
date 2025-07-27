@@ -10,7 +10,7 @@
     public class ErrorRespuesta
     {
         public string MensajeError { get; set; }
-        public Exception Exception { get; set; }
+        public string Exception { get; set; }
         public int CodigoRespuesta { get; set; }
     }
 }

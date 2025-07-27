@@ -41,5 +41,18 @@ namespace ProductosAPI.Controllers
             };
             return Ok(respuesta);
         }
+
+        [HttpGet("getCategoriasAll")]
+        public IActionResult getCategoriasAll()
+        {
+            //int totalRegistros = db.Categoria.ToList().Count();
+            List<Categoria> categorias = db.Categoria.OrderBy(o => o.Id).ToList();
+            //var respuesta = new RespuestaCategorias
+            //{
+            //    TotalCategorias = totalRegistros,
+            //    Categorias = categorias
+            //};
+            return Ok(categorias);
+        }
     }
 }
