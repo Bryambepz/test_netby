@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TipoTransaccion } from '../../domain/tipo-transaccion';
 import { Transaccion } from '../../domain/transaccion';
+import { TransaccionRespuesta } from '../../domain/transaccion-respuesta';
 
 @Injectable({
   providedIn: 'root'
@@ -19,5 +20,9 @@ export class TransaccionService {
 
   guardarTransaccion(transaccionGuarda: Transaccion):Observable<string> {
     return this.http.post<string>(this.url+'guardar', transaccionGuarda);
+  }
+
+  obtenerTransaccionPaginacion(pagina: number, tamanio: number): Observable<TransaccionRespuesta>{
+    return this.http.get<TransaccionRespuesta>(this.url+`getTransaccionesPaginacion?pagina=${pagina}&paginaTamanio=${tamanio}`);
   }
 }
