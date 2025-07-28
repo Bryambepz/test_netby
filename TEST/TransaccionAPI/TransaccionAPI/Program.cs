@@ -9,8 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<BaseDatosContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddHostedService<BorrarTemporales>();
-
 // Agrgar CORS
 builder.Services.AddCors(options =>
 {
@@ -35,15 +33,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-var rutaImagenes = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName;
-rutaImagenes = rutaImagenes.Replace("ProductosAPI", "NAS-IMGS");
-
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(rutaImagenes),
-    RequestPath = "/api/imagenes"
-});
 
 app.UseCors("AllowAll");
 

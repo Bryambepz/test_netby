@@ -46,6 +46,7 @@ public partial class BaseDatosContext : DbContext
                 .HasMaxLength(500)
                 .UseCollation("Latin1_General_CI_AS")
                 .HasColumnName("DESCRIPCION");
+            entity.Property(e => e.Estado).HasColumnName("ESTADO");
             entity.Property(e => e.Imagen)
                 .HasMaxLength(250)
                 .UseCollation("Latin1_General_CI_AS")
@@ -71,6 +72,10 @@ public partial class BaseDatosContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Estado).HasColumnName("ESTADO");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(250)
+                .UseCollation("Latin1_General_CI_AS")
+                .HasColumnName("NOMBRE");
         });
 
         modelBuilder.Entity<Transacciones>(entity =>
@@ -85,6 +90,7 @@ public partial class BaseDatosContext : DbContext
                 .HasMaxLength(500)
                 .UseCollation("Latin1_General_CI_AS")
                 .HasColumnName("DETALLE");
+            entity.Property(e => e.Estado).HasColumnName("ESTADO");
             entity.Property(e => e.Fecha).HasColumnName("FECHA");
             entity.Property(e => e.PrecioTotal)
                 .HasColumnType("decimal(6, 4)")

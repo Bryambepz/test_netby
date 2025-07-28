@@ -21,6 +21,8 @@ public partial class Transacciones
 
     public int ProductoId { get; set; }
 
+    public bool Estado { get; set; }
+
     public virtual Productos Producto { get; set; } = null!;
 
     public virtual TipoTransaccion TipoTransaccion { get; set; } = null!;

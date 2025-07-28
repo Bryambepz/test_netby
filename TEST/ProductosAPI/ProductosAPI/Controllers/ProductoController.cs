@@ -106,13 +106,14 @@ namespace ProductosAPI.Controllers
         }
 
         [HttpGet("getProductosPaginacion")]
-        public IActionResult getCategorias([FromQuery] int pagina, [FromQuery] int paginaTamanio)
+        public IActionResult getProductosPaginacion([FromQuery] int pagina, [FromQuery] int paginaTamanio)
         {
             int totalRegistros = db.Productos.ToList().Count();
             var pathImg = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName.Replace("ProductosAPI", "NAS-IMGS\\");
             List<Productos> productosList = db.
                 Productos
                 .Include(i => i.Categoria)
+                .Where( p => p.Estado)
                 .OrderBy(o => o.Id)
                 .Skip((pagina - 1) * paginaTamanio)
                 .Take(paginaTamanio)
@@ -124,6 +125,42 @@ namespace ProductosAPI.Controllers
                     Imagen = s.Imagen.Replace(pathImg, ""),
                     Precio = s.Precio,
                     Stock = s.Stock,
+                    Estado = s.Estado,
+                    Categoria = new Categoria
+                    {
+                        Id = s.Categoria.Id,
+                        Nombre = s.Categoria.Nombre,
+                        Productos = null
+                    },
+                })
+                .ToList();
+            var respuesta = new ProductoRespuesta
+            {
+                TotalProductos = totalRegistros,
+                ProductosLista = productosList,
+            };
+            return Ok(respuesta);
+        }
+
+        [HttpGet("getProductosPaginacion")]
+        public IActionResult getProductos()
+        {
+            int totalRegistros = db.Productos.ToList().Count();
+            var pathImg = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName.Replace("ProductosAPI", "NAS-IMGS\\");
+            List<Productos> productosList = db.
+                Productos
+                .Include(i => i.Categoria)
+                .Where(p => p.Estado)
+                .OrderBy(o => o.Id)
+                .Select(s => new Productos
+                {
+                    Id = s.Id,
+                    Nombre = s.Nombre,
+                    Descripcion = s.Descripcion,
+                    Imagen = s.Imagen.Replace(pathImg, ""),
+                    Precio = s.Precio,
+                    Stock = s.Stock,
+                    Estado = s.Estado,
                     Categoria = new Categoria
                     {
                         Id = s.Categoria.Id,
