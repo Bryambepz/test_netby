@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Producto } from '../../../../domain/producto';
 import { ProductoService } from '../../../../servicios/Producto/producto.service';
@@ -7,6 +7,7 @@ import { ImageModule } from 'primeng/image';
 import { ButtonModule } from 'primeng/button';
 import { FilterMatchMode } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ver-producto',
@@ -23,12 +24,18 @@ export class VerProductoComponent implements OnInit{
   cargando: boolean = false;
 
   constructor(
-    private productoService: ProductoService
+    private productoService: ProductoService,
+    private router: Router,
   ){
 
   }
   ngOnInit(): void {
     this.cargarProductos(null);
+  }
+
+  emitirId(id: number) {
+    console.log("se emite", id);
+    this.router.navigate(['dashboard/producto/productos-crear', id]);
   }
 
   cargarProductos(event: TableLazyLoadEvent | null){

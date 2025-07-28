@@ -77,6 +77,54 @@ namespace ProductosAPI.Controllers
             return Ok("Producto Guardado");
         }
 
+        [HttpPost("actualizar")]
+        public IActionResult actualizar(ProductoRequerimiento productoRequerimiento)
+        {
+            if (productoRequerimiento.productos == null)
+            {
+                throw new Exception("El producto esta vacio");
+            }
+            else
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        if (string.IsNullOrWhiteSpace(productoRequerimiento.imagenNombre))
+                            return BadRequest("Nombre de archivo vacío.");
+
+                        var rutaPAth = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName;
+                        rutaPAth = rutaPAth.Replace("ProductosAPI", "NAS-IMGS");
+                        var rutaTemp = Path.Combine(rutaPAth.Replace("NAS-IMGS", "TEMP"), productoRequerimiento.imagenNombre);
+
+                        productoRequerimiento.productos.CategoriaId = productoRequerimiento.productos.Categoria.Id;
+                        productoRequerimiento.productos.Categoria = null;
+                        db.Productos.Update(productoRequerimiento.productos);
+                        db.SaveChanges();
+
+                        int idProductoGuardado = productoRequerimiento.productos.Id;
+                        var rutaImagenGuardar = Path.Combine(rutaPAth, $"{idProductoGuardado}.png");
+                        Directory.CreateDirectory(Path.GetDirectoryName(rutaImagenGuardar));
+
+                        System.IO.File.Copy(rutaTemp, rutaImagenGuardar, overwrite: true);
+                        System.IO.File.Delete(rutaTemp);
+
+                        productoRequerimiento.productos.Imagen = rutaImagenGuardar;
+                        db.Productos.Update(productoRequerimiento.productos);
+                        db.SaveChanges();
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error al guardar el producto");
+                    }
+                }
+            }
+            return Ok("Producto Actualizado");
+        }
+
         //[HttpGet("getProductos")]
         //public IActionResult getProduct([FromQuery] int pagina, [FromQuery] int paginaTamanio)
         //{
@@ -175,6 +223,34 @@ namespace ProductosAPI.Controllers
                 ProductosLista = productosList,
             };
             return Ok(respuesta);
+        }
+
+        [HttpGet("getProductosById/{id}")]
+        public IActionResult getProductosById([FromRoute] int id)
+        {
+            var pathImg = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName.Replace("ProductosAPI", "NAS-IMGS\\");
+            Productos productoPorId = db.Productos
+                .Include(i => i.Categoria)
+                .Where(p => p.Estado && p.Id == id)
+                .Select(s => new Productos
+                {
+                    Id = s.Id,
+                    Nombre = s.Nombre,
+                    Descripcion = s.Descripcion,
+                    Imagen = s.Imagen.Replace(pathImg, ""),
+                    Precio = s.Precio,
+                    Stock = s.Stock,
+                    Estado = s.Estado,
+                    Categoria = new Categoria
+                    {
+                        Id = s.Categoria.Id,
+                        Nombre = s.Categoria.Nombre,
+                        Estado = s.Categoria.Estado,
+                        Productos = new List<Productos>()
+                    },
+                })
+                .FirstOrDefault();
+            return Ok(productoPorId);
         }
     }
 }

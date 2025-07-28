@@ -59,7 +59,7 @@
                 <td>{{ producto.categoria.nombre }}</td>
                 <td>
                     <div class="contenedor-btn">
-                        <button type="submit" pButton pRipple label="Editar" class="p-button-success"></button>
+                        <button type="submit" pButton pRipple label="Editar" class="p-button-success" (click)="emitirId(producto.id)"></button>
                         <button type="submit" pButton pRipple label="Eliminar" class="p-button-danger"></button>
                     </div>
                 </td>

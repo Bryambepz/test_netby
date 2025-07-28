@@ -19,6 +19,10 @@ export const routes: Routes = [
                         loadComponent: () => import('./dashboard/pages/producto/crear-producto/crear-producto.component').then(t => t.CrearProductoComponent),
                     },
                     {
+                        path: 'productos-crear/:id',
+                        loadComponent: () => import('./dashboard/pages/producto/crear-producto/crear-producto.component').then(t => t.CrearProductoComponent),
+                    },
+                    {
                         path: 'productos-ver',
                         loadComponent: () => import('./dashboard/pages/producto/ver-producto/ver-producto.component').then(t => t.VerProductoComponent),
                     },
