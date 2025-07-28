@@ -52,7 +52,7 @@ export class CrearTransaccionComponent implements OnInit{
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if ( id != null ) {
-      console.log("reciv", id)
+      // console.log("reciv", id)
       this.esUpdate = true;
       this.obtenerTransaccionActualizar(Number(id));
     }
@@ -72,7 +72,7 @@ export class CrearTransaccionComponent implements OnInit{
       const _transaccion: Transaccion = this.transaccionForm.value as Transaccion;
       _transaccion.estado = true;
       _transaccion.producto.categoria.productos = [];
-      console.log("la transac guarar", _transaccion);
+      // console.log("la transac guarar", _transaccion);
       if ( !this.esUpdate ) {
         this.transaccionService.guardarTransaccion(_transaccion).subscribe({
           next: (value) => {
@@ -108,7 +108,7 @@ export class CrearTransaccionComponent implements OnInit{
   obtenerProductos() {
     this.productoService.obtenerProductos().subscribe({
       next: (value) => {
-        console.log("los prod", value.productosLista);
+        // console.log("los prod", value.productosLista);
         
         this.productos = value.productosLista;
       }
@@ -124,9 +124,9 @@ export class CrearTransaccionComponent implements OnInit{
 
   calculaPrecioTotal(){
     this.transaccionForm.get('cantidad')?.valueChanges.subscribe(valor => {
-      console.log('la cantidad es de :', valor);
+      // console.log('la cantidad es de :', valor);
       const precioU = this.transaccionForm.get('precioUnitario')?.value;
-      console.log("el precio", precioU);
+      // console.log("el precio", precioU);
       
       this.transaccionForm.patchValue({
         precioTotal: valor * precioU
@@ -137,14 +137,14 @@ export class CrearTransaccionComponent implements OnInit{
   obtenerTransaccionActualizar(id: number){
     this.transaccionService.obtenerTransaccionPorId(id).subscribe({
       next: (value) => {
-        console.log("el prid", value);
+        // console.log("el prid", value);
         
         this.transaccionForm.patchValue(value);
         // var categoria: Categoria = this.productoForm.get('categoria')?.value as Categoria;
-        console.log("form", this.transaccionForm);
+        // console.log("form", this.transaccionForm);
         const fechaString = this.transaccionForm.get("fecha")?.value;
         const fechaDate = new Date(fechaString);
-        console.log("la fecha", fechaDate);
+        // console.log("la fecha", fechaDate);
         this.transaccionForm.patchValue({
           fecha: fechaDate
         });

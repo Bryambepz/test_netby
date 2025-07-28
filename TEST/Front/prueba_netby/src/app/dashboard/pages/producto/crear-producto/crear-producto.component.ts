@@ -74,7 +74,7 @@ export class CrearProductoComponent implements OnInit{
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if ( id != null ) {
-      console.log("reciv", id)
+      // console.log("reciv", id)
       this.esUpdate = true;
       this.obtenerProductoActualizar(Number(id));
     }
@@ -89,11 +89,11 @@ export class CrearProductoComponent implements OnInit{
   }
 
   guardarProducto() {
-    console.log("form de producto", this.productoForm);
+    // console.log("form de producto", this.productoForm);
     
     if (this.productoForm.valid) {
       const _producto: Producto = this.productoForm.value as Producto;
-      console.log("producto", _producto);
+      // console.log("producto", _producto);
       if ( this.nombreTemporal == "" ) {
         Swal.fire({
           title: "No imagen",
@@ -140,7 +140,7 @@ export class CrearProductoComponent implements OnInit{
   cargarCategorias() {
     this.categoriaService.obtenerCategorias().subscribe({
       next: (value) => {
-        console.log('las categorias', value);
+        // console.log('las categorias', value);
 
         this.categorias = value;
       },
@@ -148,9 +148,9 @@ export class CrearProductoComponent implements OnInit{
   }
 
   cargarImagen(event: FileUploadEvent) {
-    console.log("el event", event);
+    // console.log("el event", event);
     const original = event.originalEvent as  HttpResponse<any>;
-    console.log("origjn", original!.body.imageUrl);
+    // console.log("origjn", original!.body.imageUrl);
     
     this.nombreTemporal = original!.body.imageUrl;
     Swal.fire({
@@ -178,11 +178,11 @@ export class CrearProductoComponent implements OnInit{
   obtenerProductoActualizar(id: number){
     this.productoService.obtenerProductoPorId(id).subscribe({
       next: (value) => {
-        console.log("el prid", value);
+        // console.log("el prid", value);
         
         this.productoForm.patchValue(value);
         var categoria: Categoria = this.productoForm.get('categoria')?.value as Categoria;
-        console.log("form", categoria);
+        // console.log("form", categoria);
         this.productoForm.get('categoria')?.setValue(categoria);
         this.productoForm.patchValue({
           categoria: categoria

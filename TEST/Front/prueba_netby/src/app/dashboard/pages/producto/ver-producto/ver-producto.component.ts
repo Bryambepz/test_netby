@@ -35,7 +35,7 @@ export class VerProductoComponent implements OnInit{
   }
 
   emitirId(id: number) {
-    console.log("se emite", id);
+    // console.log("se emite", id);
     this.router.navigate(['dashboard/producto/productos-crear', id]);
   }
 
@@ -44,12 +44,12 @@ export class VerProductoComponent implements OnInit{
 
     const pagina = (event?.first ?? 0) / (event?.rows ?? 10) + 1;
     const tamano = event?.rows ?? 10;
-    console.log("la pagina", pagina);
-    console.log("el tama;o", tamano);
+    // console.log("la pagina", pagina);
+    // console.log("el tama;o", tamano);
     
     this.productoService.obtenerProductoPaginacion(pagina, tamano).subscribe({
       next: (value) => {
-        console.log("respue", value);
+        // console.log("respue", value);
         
           this.totalProductos = value.totalProductos;
           this.productos = value.productosLista;

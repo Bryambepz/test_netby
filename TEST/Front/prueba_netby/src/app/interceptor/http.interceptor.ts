@@ -11,7 +11,7 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     map((event) => {
       if (event instanceof HttpResponse) {
-        console.log('el body', event.body);
+        // console.log('el body', event.body);
         
         const respuesta = event.body as ApiRespuesta<any>;
 
@@ -35,11 +35,11 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => {
       return event;
     }),
     catchError((error: HttpErrorResponse) => {
-      console.log("error atrapado", error);
+      // console.log("error atrapado", error);
       var errorObj = error.error;
       if ( errorObj.hayError ?? false ) {
         const _errorResponse: ApiRespuesta<any> = errorObj;
-        console.log("error respuesta", _errorResponse);
+        // console.log("error respuesta", _errorResponse);
         
         Swal.fire({
           title: 'Error',

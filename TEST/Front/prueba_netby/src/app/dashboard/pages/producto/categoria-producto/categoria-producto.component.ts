@@ -67,8 +67,8 @@ export class CategoriaProductoComponent implements OnInit{
 
     const pagina = (event?.first ?? 0) / (event?.rows ?? 10) + 1;
     const tamano = event?.rows ?? 10;
-    console.log("la pagina", pagina);
-    console.log("el tama;o", tamano);
+    // console.log("la pagina", pagina);
+    // console.log("el tama;o", tamano);
     
     this.categoriaService.obtenerCategoriasPaginacion(pagina, tamano).subscribe({
       next: (value) => {
