@@ -30,7 +30,17 @@ export const routes: Routes = [
             },
             {
                 path: 'transaccion',
-                loadComponent: () => import('./dashboard/pages/transaccion/transaccion.component').then(t => t.TransaccionComponent),
+                // loadComponent: () => import('./dashboard/pages/transaccion/transaccion.component').then(t => t.TransaccionComponent),
+                children: [
+                    {
+                        path: 'transaccion-crear',
+                        loadComponent: () => import('./dashboard/pages/transaccion/crear-transaccion/crear-transaccion.component').then(t => t.CrearTransaccionComponent),
+                    },
+                    {
+                        path: 'transaccion-ver',
+                        loadComponent: () => import('./dashboard/pages/transaccion/ver-transaccion/ver-transaccion.component').then(t => t.VerTransaccionComponent),
+                    },
+                ]
             },
         ]
     },

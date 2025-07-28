@@ -1,0 +1,38 @@
+<div>
+    <h3>Crear Producto</h3>
+    <form [formGroup]="transaccionForm" (ngSubmit)="guardarTransaccion()" class="formulario-contenido">
+
+        <!-- <div class="contenido"> -->
+            <label for="fecha">Fecha</label>
+            <input type="text" placeholder="Nombre Producto" formControlName="nombre">
+
+            <label for="descripcion">Descripción</label>
+            <input type="text" placeholder="Descripción" formControlName="descripcion">
+
+            <label for="categoria">Categoría</label>
+            <!-- <input type="text" placeholder="Categoría" formControlName="categoria"> -->
+            <p-listbox [options]="productos" formControlName="producto" optionLabel="nombre" [filter]="true"
+                [style]="{ width: '50%', 'margin-bottom': '1rem' }" [listStyle]="{'max-height': '200px' }" />
+
+            <label for="precio">Precio</label>
+            <input type="number" placeholder="precio" formControlName="precio">
+
+            <label for="stock">Stock</label>
+            <input type="number" placeholder="stock" formControlName="stock">
+
+            <button type="submit" pButton pRipple label="GUARDAR" class="p-button-success" [disabled]="!transaccionForm.valid">
+            </button>
+        <!-- </div> -->
+        <!-- <div class="contenido-img">
+
+            <p-image *ngIf="imgPrevisualizar != ''" [src]="imgPrevisualizar" alt="imagen del producto seleccionado" width="350" [preview]="true" />
+
+            <p-fileUpload mode="basic" chooseLabel="Cargar Imagen" chooseIcon="pi pi-upload" name="imagen"
+                [url]="apiUrlImagen" accept="image/*" maxFileSize="50000000"
+                (onUpload)="cargarImagen($event)"
+                (onSelect)="seleccionaArchivo($event)"
+                 />
+        </div> -->
+
+    </form>
+</div>

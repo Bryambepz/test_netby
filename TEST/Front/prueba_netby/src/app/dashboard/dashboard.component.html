@@ -13,7 +13,13 @@
             </ul>
 
             <!-- <a routerLink="producto" routerLinkActive="active">Productos</a> -->
-            <a routerLink="transaccion" routerLinkActive="active">Transacciones</a>
+            <a routerLink="transaccion" routerLinkActive="active"  [routerLinkActiveOptions]="{ exact: false }">
+                Transacciones
+            </a>
+            <ul class="submenu">
+                <li><a routerLink="transaccion/transaccion-crear" routerLinkActive="active">Crear</a></li>
+                <li><a routerLink="transaccion/transaccion-ver" routerLinkActive="active">Ver</a></li>
+            </ul>
         </nav>
     </aside>
     <main class="content">
