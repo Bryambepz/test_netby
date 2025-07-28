@@ -125,6 +125,19 @@ namespace ProductosAPI.Controllers
             return Ok("Producto Actualizado");
         }
 
+        [HttpGet("eliminarProducto/{id}")]
+        public IActionResult eliminarProducto([FromRoute] int id) {
+            Productos productoEliminar = db.Productos.Where( p => p.Estado && p.Id == id).FirstOrDefault();
+            if ( productoEliminar == null)
+            {
+                return BadRequest("No se encontro el producto a eliminar");
+            }
+            productoEliminar.Estado = false;
+            db.Update(productoEliminar);
+            db.SaveChanges();
+            return Ok("Producto Eliminado");
+        }
+
         //[HttpGet("getProductos")]
         //public IActionResult getProduct([FromQuery] int pagina, [FromQuery] int paginaTamanio)
         //{

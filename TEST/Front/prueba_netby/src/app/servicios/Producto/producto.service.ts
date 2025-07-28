@@ -33,4 +33,8 @@ export class ProductoService {
   obtenerProductoPorId(id: number): Observable<Producto>{
     return this.http.get<Producto>(this.url+`getProductosById/${id}`);
   }
+  
+  eliminarProducto(id: number): Observable<string>{
+    return this.http.get<string>(this.url+`eliminarProducto/${id}`);
+  }
 }

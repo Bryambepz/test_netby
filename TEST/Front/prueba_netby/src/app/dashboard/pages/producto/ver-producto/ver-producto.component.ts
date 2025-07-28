@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { FilterMatchMode } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-ver-producto',
@@ -55,6 +56,32 @@ export class VerProductoComponent implements OnInit{
       },
       complete: () => {
         this.cargando = false;
+      }
+    });
+  }
+
+  eliminarProducto(id: number){
+    Swal.fire({
+      title: "Esta seguro de eliminar este producto?",
+      text: "El producto no se volvera a visualizar en el sistema",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No, Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productoService.eliminarProducto(id).subscribe({
+          next: (value) => {
+            Swal.fire({
+              title: "Eliminado",
+              text: value,
+              icon: "success"
+            });
+            this.cargarProductos(null);
+          }
+        })
       }
     });
   }
