@@ -20,7 +20,7 @@ namespace ProductosAPI.Controllers
         {
             if ( categoria == null )
             {
-                throw new Exception("La categoria esta vacia");
+                BadRequest("La categoria esta vacia");
             } else
             {
                 db.Categoria.Add(categoria);

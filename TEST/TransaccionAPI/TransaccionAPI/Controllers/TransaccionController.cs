@@ -21,7 +21,7 @@ namespace TransaccionAPI.Controllers
             return Ok("API OK");
         }
 
-        [HttpGet("obtenerTiposTransaccion")]
+        [HttpGet("getTiposTransaccion")]
         public IActionResult obtenerTipoTransaccion()
         {
             List<TipoTransaccion> tipoTrans = db.TipoTransaccion.ToList();
@@ -31,7 +31,39 @@ namespace TransaccionAPI.Controllers
         [HttpPost("guardar")]
         public IActionResult guardar(Transacciones transaccionGuardar)
         {
-            return Ok();
+            if (transaccionGuardar == null)
+            {
+                return BadRequest("No hay datos que guardar de la transacción");
+            }
+            else
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        Productos productoTransaccion = db.Productos.Where( p => p.Id == transaccionGuardar.Producto.Id ).FirstOrDefault();
+                        if ( transaccionGuardar.Cantidad > productoTransaccion.Stock )
+                        {
+                            return BadRequest($"No se tiene la cantidad de {transaccionGuardar.Cantidad} en stock del producto {productoTransaccion.Nombre}\n Indique un valor menor o igual a {productoTransaccion.Stock}");
+                        }
+                        productoTransaccion.Stock -= transaccionGuardar.Cantidad;
+                        transaccionGuardar.ProductoId = transaccionGuardar.Producto.Id;
+                        transaccionGuardar.Producto = null;
+                        transaccionGuardar.TipoTransaccionId = transaccionGuardar.TipoTransaccion.Id;
+                        transaccionGuardar.TipoTransaccion = null;
+                        db.Add(transaccionGuardar);
+                        db.Update(productoTransaccion);
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error al guardar la transaccion");
+                    }
+                }
+            }
+            return Ok("Transaccion Guardada");
         }
     }
 }

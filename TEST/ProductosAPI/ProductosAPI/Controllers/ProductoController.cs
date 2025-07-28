@@ -77,12 +77,12 @@ namespace ProductosAPI.Controllers
             return Ok("Producto Guardado");
         }
 
-        [HttpGet("getProductos")]
-        public IActionResult getProduct([FromQuery] int pagina, [FromQuery] int paginaTamanio)
-        {
-            List<Productos> productos = db.Productos.OrderBy(o => o.Id).Skip( (pagina - 1) * paginaTamanio ).Take(paginaTamanio).ToList();
-            return Ok(productos);
-        }
+        //[HttpGet("getProductos")]
+        //public IActionResult getProduct([FromQuery] int pagina, [FromQuery] int paginaTamanio)
+        //{
+        //    List<Productos> productos = db.Productos.OrderBy(o => o.Id).Skip( (pagina - 1) * paginaTamanio ).Take(paginaTamanio).ToList();
+        //    return Ok(productos);
+        //}
 
         [HttpPost("cargarImagen")]
         public async Task<IActionResult> cargarImagen(IFormFile imagen)
@@ -142,7 +142,7 @@ namespace ProductosAPI.Controllers
             return Ok(respuesta);
         }
 
-        [HttpGet("getProductosPaginacion")]
+        [HttpGet("getProductos")]
         public IActionResult getProductos()
         {
             int totalRegistros = db.Productos.ToList().Count();

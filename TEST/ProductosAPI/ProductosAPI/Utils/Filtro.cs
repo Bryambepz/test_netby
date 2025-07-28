@@ -21,7 +21,7 @@ namespace ProductosAPI.Utils
 
                 var response = new ApiRespuesta<object>
                 {
-                    HayError = false,
+                    HayError = codigoEstado == 200 ? false : true,
                     Body = codigoEstado == 200 ? objectResult.Value : null,
                     Error = codigoEstado != 200 ? new ErrorRespuesta
                     {
