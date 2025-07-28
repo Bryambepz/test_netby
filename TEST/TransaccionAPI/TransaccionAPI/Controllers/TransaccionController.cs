@@ -1,6 +1,9 @@
 ﻿using Core.BaseDatos;
 using Core.Entidades;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Models.ProductoModel;
+using Models.TransaccionModel;
 
 namespace TransaccionAPI.Controllers
 {
@@ -64,6 +67,46 @@ namespace TransaccionAPI.Controllers
                 }
             }
             return Ok("Transaccion Guardada");
+        }
+
+        [HttpGet("getTransaccionesPaginacion")]
+        public IActionResult getTransaccionesPaginacion([FromQuery] int pagina, [FromQuery] int paginaTamanio)
+        {
+            int totalRegistros = db.Transacciones.ToList().Count();
+            List<Transacciones> transaccionesList = db.Transacciones
+                .Include(i => i.Producto)
+                .Include(i => i.TipoTransaccion)
+                .Where(p => p.Estado)
+                .OrderBy(o => o.Id)
+                .Skip((pagina - 1) * paginaTamanio)
+                .Take(paginaTamanio)
+                .Select(s => new Transacciones
+                {
+                    Id = s.Id,
+                    Fecha = s.Fecha,
+                    Cantidad = s.Cantidad,
+                    PrecioUnitario = s.PrecioUnitario,
+                    PrecioTotal = s.PrecioTotal,
+                    Detalle = s.Detalle,
+                    Estado = s.Estado,
+                    TipoTransaccion = new TipoTransaccion
+                    {
+                        Id = s.TipoTransaccion.Id,
+                        Nombre = s.TipoTransaccion.Nombre,
+                    },
+                    Producto = new Productos
+                    {
+                        Id = s.Producto.Id,
+                        Nombre = s.Producto.Nombre
+                    }
+                })
+                .ToList();
+            var respuesta = new TransaccionRespuesta
+            {
+                TotalTransacciones = totalRegistros,
+                TransaccionesLista = transaccionesList,
+            };
+            return Ok(respuesta);
         }
     }
 }
