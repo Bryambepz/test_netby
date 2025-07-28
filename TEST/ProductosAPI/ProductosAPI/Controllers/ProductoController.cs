@@ -2,6 +2,7 @@
 using Core.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Models.CategoriaModel;
 using Models.ProductoModel;
 
 namespace ProductosAPI.Controllers
@@ -102,6 +103,41 @@ namespace ProductosAPI.Controllers
 
             // Puedes retornar solo el nombre o la ruta si luego la sirves
             return Ok(new { imageUrl = fileName });
+        }
+
+        [HttpGet("getProductosPaginacion")]
+        public IActionResult getCategorias([FromQuery] int pagina, [FromQuery] int paginaTamanio)
+        {
+            int totalRegistros = db.Productos.ToList().Count();
+            var pathImg = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName.Replace("ProductosAPI", "NAS-IMGS\\");
+            List<Productos> productosList = db.
+                Productos
+                .Include(i => i.Categoria)
+                .OrderBy(o => o.Id)
+                .Skip((pagina - 1) * paginaTamanio)
+                .Take(paginaTamanio)
+                .Select( s => new Productos
+                {
+                    Id = s.Id,
+                    Nombre = s.Nombre,
+                    Descripcion = s.Descripcion,
+                    Imagen = s.Imagen.Replace(pathImg, ""),
+                    Precio = s.Precio,
+                    Stock = s.Stock,
+                    Categoria = new Categoria
+                    {
+                        Id = s.Categoria.Id,
+                        Nombre = s.Categoria.Nombre,
+                        Productos = null
+                    },
+                })
+                .ToList();
+            var respuesta = new ProductoRespuesta
+            {
+                TotalProductos = totalRegistros,
+                ProductosLista = productosList,
+            };
+            return Ok(respuesta);
         }
     }
 }

@@ -1,5 +1,6 @@
 using Core.BaseDatos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using ProductosAPI.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +35,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+var rutaImagenes = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName;
+rutaImagenes = rutaImagenes.Replace("ProductosAPI", "NAS-IMGS");
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(rutaImagenes),
+    RequestPath = "api/imagenes"
+});
 
 app.UseCors("AllowAll");
 
