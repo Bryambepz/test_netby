@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Producto } from '../../domain/producto';
 import { ProductoRequerimiento } from '../../domain/producto-requerimiento';
+import { ProductoRespuesta } from '../../domain/producto-respuesta';
 
 @Injectable({
   providedIn: 'root'
@@ -15,5 +16,9 @@ export class ProductoService {
 
   guardarProducto(productoGuarda: ProductoRequerimiento): Observable<string>{
     return this.http.post<string>(this.url+'guardar', productoGuarda);
+  }
+  
+  obtenerProductoPaginacion(pagina: number, tamanio: number): Observable<ProductoRespuesta>{
+    return this.http.get<ProductoRespuesta>(this.url+`getProductosPaginacion?pagina=${pagina}&paginaTamanio=${tamanio}`);
   }
 }

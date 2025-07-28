@@ -20,7 +20,7 @@
             <label for="stock">Stock</label>
             <input type="number" placeholder="stock" formControlName="stock">
 
-            <button type="submit" pButton pRipple label="GUARDAR" class="p-button-success">
+            <button type="submit" pButton pRipple label="GUARDAR" class="p-button-success" [disabled]="!productoForm.valid">
             </button>
         </div>
         <div class="contenido-img">

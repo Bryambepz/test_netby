@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -58,17 +60,25 @@ export class CrearProductoComponent {
         [Validators.required],
       ],
       imagen: [''],
-      precio: [0.0, [Validators.required, Validators.pattern('^\\d{1,6}(.\\d{1,4})?$')]],
-      stock: [0, [Validators.required, Validators.pattern('[0-9 ]+$')]],
+      precio: [0.0, [Validators.required, Validators.pattern('^\\d{1,6}(.\\d{1,4})?$'), this.mayorQueCero]],
+      stock: [0, [Validators.required, Validators.pattern('[0-9 ]+$'), this.mayorQueCero]],
       estado: [true],
     });
   }
 
+  mayorQueCero(control: AbstractControl): ValidationErrors | null {
+    const valor = parseFloat(control.value);
+    if (isNaN(valor) || valor <= 0) {
+      return { mayorQueCero: true };
+    }
+    return null;
+  }
   guardarProducto() {
     console.log("form de producto", this.productoForm);
     
     if (this.productoForm.valid) {
       const _producto: Producto = this.productoForm.value as Producto;
+      console.log("producto", _producto);
       if ( this.nombreTemporal == "" ) {
         Swal.fire({
           title: "No imagen",
@@ -77,6 +87,8 @@ export class CrearProductoComponent {
         });
         return;
       }
+      _producto.imagen = "";
+      _producto.estado = true;
       const productoGuarda: ProductoRequerimiento = {
         productos: _producto,
         imagenNombre: this.nombreTemporal

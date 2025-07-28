@@ -1,1 +1,74 @@
-<p>ver-producto works!</p>
+<h3>Ver Productos</h3>
+
+<div class="card">
+    <p-table [value]="productos" [paginator]="true" [rows]="5" [totalRecords]="totalProductos" [tableStyle]="{ 'min-width': '50rem' }"
+        [rowsPerPageOptions]="[5, 10, 20]" [loading]="cargando"
+        #dt1
+        dataKey="id">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width:100%">
+                    <div class="flex align-items-center">
+                        Nombre
+                        <p-columnFilter type="text" field="nombre" display="menu" [showAddButton]="false"/>
+                    </div>
+                </th>
+                <th style="width:100%">
+                    <div class="flex align-items-center">
+                        Descripción
+                        <p-columnFilter type="text" field="descripcion" display="menu" [showAddButton]="false"/>
+                    </div>
+                </th>
+                <th style="width:25%">Imagen</th>
+                <th style="width:25%">
+                    <div class="flex align-items-center">
+                        Precio
+                        <p-columnFilter type="numeric" field="precio" display="menu" [showAddButton]="false"/>
+                    </div>
+                </th>
+                <th style="width:25%">
+                    <div class="flex align-items-center">
+                        Stock
+                        <p-columnFilter type="numeric" field="stock" display="menu" [showAddButton]="false"/>
+                    </div>
+                </th>
+                <th style="width:25%">
+                    <div class="flex align-items-center">
+                        Categoria
+                        <p-columnFilter type="text" field="categoria.nombre" display="menu" [showAddButton]="false"/>
+                    </div>
+                </th>
+                <th style="width:25%">Accion</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-producto>
+            <tr>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.descripcion }}</td>
+                <td>
+                    <p-image 
+                        [src]="'http://localhost:5196/imagenes/' + producto.imagen" 
+                        alt="Imagen"
+                        width="250"
+                        [preview]="true">
+                    </p-image>
+                </td>
+                <!-- <td>{{ categoria.imagen }}</td> -->
+                <td>$ {{ producto.precio }}</td>
+                <td>{{ producto.stock }}</td>
+                <td>{{ producto.categoria.nombre }}</td>
+                <td>
+                    <div class="contenedor-btn">
+                        <button type="submit" pButton pRipple label="Editar" class="p-button-success"></button>
+                        <button type="submit" pButton pRipple label="Eliminar" class="p-button-danger"></button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="5">No se encontro productos.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
