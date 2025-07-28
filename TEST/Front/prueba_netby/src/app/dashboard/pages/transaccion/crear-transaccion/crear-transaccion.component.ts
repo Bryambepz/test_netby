@@ -9,6 +9,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { ProductoService } from '../../../../servicios/Producto/producto.service';
 import { Transaccion } from '../../../../domain/transaccion';
 import Swal from 'sweetalert2';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-crear-transaccion',
@@ -28,13 +29,16 @@ export class CrearTransaccionComponent implements OnInit{
 
   productos: Producto[] = [];
   tipoTransaccionLista: TipoTransaccion[] = [];
+  esUpdate: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private transaccionService: TransaccionService,
-    private productoService: ProductoService
+    private productoService: ProductoService,
+    private route: ActivatedRoute,
   ){
      this.transaccionForm = this.fb.group({
+      id: [0],
           fecha: [Date.now, [Validators.required]],
           tipoTransaccion: ['', [Validators.required]],
           producto: ['', [Validators.required]],
@@ -46,6 +50,12 @@ export class CrearTransaccionComponent implements OnInit{
      this.obtenerTiposTransaccion();
   }
   ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if ( id != null ) {
+      console.log("reciv", id)
+      this.esUpdate = true;
+      this.obtenerTransaccionActualizar(Number(id));
+    }
     this.obtenerProductos();
   }
 
@@ -63,16 +73,27 @@ export class CrearTransaccionComponent implements OnInit{
       _transaccion.estado = true;
       _transaccion.producto.categoria.productos = [];
       console.log("la transac guarar", _transaccion);
-      
-      this.transaccionService.guardarTransaccion(_transaccion).subscribe({
-        next: (value) => {
-          Swal.fire({
-            title: value,
-            icon: 'success',
-          });
-          this.transaccionForm.reset();
-        }
-      })
+      if ( !this.esUpdate ) {
+        this.transaccionService.guardarTransaccion(_transaccion).subscribe({
+          next: (value) => {
+            Swal.fire({
+              title: value,
+              icon: 'success',
+            });
+            this.transaccionForm.reset();
+          }
+        });
+      } else {
+        this.transaccionService.actualizarTransaccion(_transaccion).subscribe({
+          next: (value) => {
+            Swal.fire({
+              title: value,
+              icon: 'success',
+            });
+            this.transaccionForm.reset();
+          }
+        });
+      }
     }
   }
 
@@ -87,6 +108,8 @@ export class CrearTransaccionComponent implements OnInit{
   obtenerProductos() {
     this.productoService.obtenerProductos().subscribe({
       next: (value) => {
+        console.log("los prod", value.productosLista);
+        
         this.productos = value.productosLista;
       }
     })
@@ -109,5 +132,28 @@ export class CrearTransaccionComponent implements OnInit{
         precioTotal: valor * precioU
       });
     });
+  }
+
+  obtenerTransaccionActualizar(id: number){
+    this.transaccionService.obtenerTransaccionPorId(id).subscribe({
+      next: (value) => {
+        console.log("el prid", value);
+        
+        this.transaccionForm.patchValue(value);
+        // var categoria: Categoria = this.productoForm.get('categoria')?.value as Categoria;
+        console.log("form", this.transaccionForm);
+        const fechaString = this.transaccionForm.get("fecha")?.value;
+        const fechaDate = new Date(fechaString);
+        console.log("la fecha", fechaDate);
+        this.transaccionForm.patchValue({
+          fecha: fechaDate
+        });
+        // this.productoForm.get('categoria')?.setValue(categoria);
+        // this.productoForm.patchValue({
+        //   categoria: categoria
+        // });
+        // this.imgPrevisualizar = 'http://localhost:5196/api/imagenes/'+this.productoForm.get('imagen')?.value
+      }
+    })
   }
 }

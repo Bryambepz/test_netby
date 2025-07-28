@@ -22,7 +22,19 @@ export class TransaccionService {
     return this.http.post<string>(this.url+'guardar', transaccionGuarda);
   }
 
+  actualizarTransaccion(transaccionGuarda: Transaccion): Observable<string>{
+    return this.http.post<string>(this.url+'actualizar', transaccionGuarda);
+  }
+
   obtenerTransaccionPaginacion(pagina: number, tamanio: number): Observable<TransaccionRespuesta>{
     return this.http.get<TransaccionRespuesta>(this.url+`getTransaccionesPaginacion?pagina=${pagina}&paginaTamanio=${tamanio}`);
+  }
+
+  obtenerTransaccionPorId(id: number): Observable<Transaccion>{
+    return this.http.get<Transaccion>(this.url+`getTransaccionById/${id}`);
+  }
+  
+  eliminarTransaccion(id: number): Observable<string>{
+    return this.http.get<string>(this.url+`eliminarTransaccion/${id}`);
   }
 }

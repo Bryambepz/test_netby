@@ -67,8 +67,8 @@
                 <td>{{ transaccion.producto.nombre }}</td>
                 <td>
                     <div class="contenedor-btn">
-                        <button type="submit" pButton pRipple label="Editar" class="p-button-success"></button>
-                        <button type="submit" pButton pRipple label="Eliminar" class="p-button-danger"></button>
+                        <button type="submit" pButton pRipple label="Editar" class="p-button-success" (click)="emitirId(transaccion.id)"></button>
+                        <button type="submit" pButton pRipple label="Eliminar" class="p-button-danger" (click)="eliminarTransaccion(transaccion.id)"></button>
                     </div>
                 </td>
             </tr>
