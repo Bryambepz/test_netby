@@ -21,4 +21,8 @@ export class ProductoService {
   obtenerProductoPaginacion(pagina: number, tamanio: number): Observable<ProductoRespuesta>{
     return this.http.get<ProductoRespuesta>(this.url+`getProductosPaginacion?pagina=${pagina}&paginaTamanio=${tamanio}`);
   }
+  
+  obtenerProductos(): Observable<ProductoRespuesta>{
+    return this.http.get<ProductoRespuesta>(this.url+`getProductos`);
+  }
 }

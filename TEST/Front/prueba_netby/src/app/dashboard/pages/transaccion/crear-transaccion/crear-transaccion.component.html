@@ -1,24 +1,30 @@
 <div>
-    <h3>Crear Producto</h3>
+    <h3>Crear Transacción</h3>
     <form [formGroup]="transaccionForm" (ngSubmit)="guardarTransaccion()" class="formulario-contenido">
 
         <!-- <div class="contenido"> -->
             <label for="fecha">Fecha</label>
-            <input type="text" placeholder="Nombre Producto" formControlName="nombre">
+            <p-calendar formControlName="fecha"/>
 
-            <label for="descripcion">Descripción</label>
-            <input type="text" placeholder="Descripción" formControlName="descripcion">
-
-            <label for="categoria">Categoría</label>
-            <!-- <input type="text" placeholder="Categoría" formControlName="categoria"> -->
-            <p-listbox [options]="productos" formControlName="producto" optionLabel="nombre" [filter]="true"
+            <label for="tipoTransaccion">Tipo Transacción</label>
+            <p-listbox [options]="tipoTransaccionLista" formControlName="tipoTransaccion" optionLabel="nombre" [filter]="true"
                 [style]="{ width: '50%', 'margin-bottom': '1rem' }" [listStyle]="{'max-height': '200px' }" />
 
-            <label for="precio">Precio</label>
-            <input type="number" placeholder="precio" formControlName="precio">
+            <label for="producto">Producto</label>
+            <p-listbox [options]="productos" formControlName="producto" optionLabel="nombre" [filter]="true"
+                [style]="{ width: '50%', 'margin-bottom': '1rem' }" [listStyle]="{'max-height': '200px' }" (onChange)="SeleccionaProducto($event)" />
 
-            <label for="stock">Stock</label>
-            <input type="number" placeholder="stock" formControlName="stock">
+            <label for="precioUnitario">Precio Unitario</label>
+            <input type="number" placeholder="Precio Unitario" formControlName="precioUnitario" [disabled]="true">
+
+            <label for="cantidad">Cantidad</label>
+            <input type="number" placeholder="cantidad" formControlName="cantidad" (input)="calculaPrecioTotal()">
+            
+            <label for="precioTotal">Precio Total</label>
+            <input type="number" placeholder="Precio Total" formControlName="precioTotal" [disabled]="true">
+            
+            <label for="detalle">Detalle</label>
+            <input type="text" placeholder="Detalle" formControlName="detalle">
 
             <button type="submit" pButton pRipple label="GUARDAR" class="p-button-success" [disabled]="!transaccionForm.valid">
             </button>

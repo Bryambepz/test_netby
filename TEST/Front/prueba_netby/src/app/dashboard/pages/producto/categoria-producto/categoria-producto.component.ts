@@ -46,6 +46,9 @@ export class CategoriaProductoComponent implements OnInit{
           });
         },
         complete: () => {
+          this.categoriaForm.reset({
+            estado: true
+          });
           this.cargarCategorias(null);
         }
       })
