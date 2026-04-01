@@ -9,5 +9,13 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
+  menuAbierto = false;
 
+  toggleMenu(): void {
+    this.menuAbierto = !this.menuAbierto;
+  }
+
+  cerrarMenu(): void {
+    this.menuAbierto = false;
+  }
 }

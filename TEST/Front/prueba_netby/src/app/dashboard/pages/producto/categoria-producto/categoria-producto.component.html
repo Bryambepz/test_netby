@@ -13,7 +13,7 @@
     </form>
     <h3>Ver Categorias</h3>
 
-    <div class="card">
+    <div class="card tabla-responsive">
         <p-table 
         [value]="categorias" 
         [paginator]="true"
@@ -21,9 +21,10 @@
         [totalRecords]="totalCategorias"
         [lazy]="true"
         (onLazyLoad)="cargarCategorias($event)"
-        [tableStyle]="{ 'min-width': '50rem' }"
+        [tableStyle]="{ 'min-width': '20rem' }"
         [rowsPerPageOptions]="[5, 10, 20]"
         [loading]="cargando"
+        responsiveLayout="scroll"
         >
             <ng-template pTemplate="header">
                 <tr>

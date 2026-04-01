@@ -1,38 +1,40 @@
 <div>
     <h3>Crear Producto</h3>
     <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()" class="formulario-contenido">
+        <div class="grupo-principal">
+            <div class="contenido">
+                <label for="nombre">Nombre</label>
+                <input type="text" placeholder="Nombre Producto" formControlName="nombre">
 
-        <div class="contenido">
-            <label for="nombre">Nombre</label>
-            <input type="text" placeholder="Nombre Producto" formControlName="nombre">
+                <label for="descripcion">Descripción</label>
+                <input type="text" placeholder="Descripción" formControlName="descripcion">
 
-            <label for="descripcion">Descripción</label>
-            <input type="text" placeholder="Descripción" formControlName="descripcion">
+                <label for="categoria">Categoría</label>
+                <!-- <input type="text" placeholder="Categoría" formControlName="categoria"> -->
+                <p-listbox [options]="categorias" formControlName="categoria" optionLabel="nombre" [filter]="true"
+                    [style]="{ width: '50%', 'margin-bottom': '1rem' }" [listStyle]="{'max-height': '200px' }" />
 
-            <label for="categoria">Categoría</label>
-            <!-- <input type="text" placeholder="Categoría" formControlName="categoria"> -->
-            <p-listbox [options]="categorias" formControlName="categoria" optionLabel="nombre" [filter]="true"
-                [style]="{ width: '50%', 'margin-bottom': '1rem' }" [listStyle]="{'max-height': '200px' }" />
+                <label for="precio">Precio</label>
+                <input type="number" placeholder="precio" formControlName="precio">
 
-            <label for="precio">Precio</label>
-            <input type="number" placeholder="precio" formControlName="precio">
+                <label for="stock">Stock</label>
+                <input type="number" placeholder="stock" formControlName="stock">
 
-            <label for="stock">Stock</label>
-            <input type="number" placeholder="stock" formControlName="stock">
+            </div>
+            <div class="contenido-img">
 
-            <button type="submit" pButton pRipple label="GUARDAR" class="p-button-success" [disabled]="!productoForm.valid">
-            </button>
+                <p-image *ngIf="imgPrevisualizar != ''" [src]="imgPrevisualizar" alt="imagen del producto seleccionado"
+                    width="350" [preview]="true" />
+
+                <p-fileUpload class="btn-upload" mode="basic" chooseLabel="Cargar Imagen" chooseIcon="pi pi-upload"
+                    name="imagen" [url]="apiUrlImagen" accept="image/*" maxFileSize="50000000"
+                    (onUpload)="cargarImagen($event)" (onSelect)="seleccionaArchivo($event)">
+                </p-fileUpload>
+            </div>
         </div>
-        <div class="contenido-img">
-
-            <p-image *ngIf="imgPrevisualizar != ''" [src]="imgPrevisualizar" alt="imagen del producto seleccionado" width="350" [preview]="true" />
-
-            <p-fileUpload mode="basic" chooseLabel="Cargar Imagen" chooseIcon="pi pi-upload" name="imagen"
-                [url]="apiUrlImagen" accept="image/*" maxFileSize="50000000"
-                (onUpload)="cargarImagen($event)"
-                (onSelect)="seleccionaArchivo($event)"
-                 />
-        </div>
+        <button type="submit" pButton pRipple label="GUARDAR" class="p-button-success btn-guardar"
+            [disabled]="!productoForm.valid">
+        </button>
 
     </form>
 </div>

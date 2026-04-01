@@ -1,39 +1,158 @@
 .formulario-contenido {
     display: flex;
     flex-direction: row;
-    gap: 1rem;
+    gap: 1.5rem;
     margin-bottom: 1rem;
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .contenido {
-    flex: 1;
+    flex: 1 1 400px;
     display: flex;
     flex-direction: column;
     margin-bottom: 1rem;
-    // width: 100%;
-    // background: red;
+    min-width: 0;
 }
 
 .contenido input {
-    width: 90%;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
 }
 
 .contenido-img {
-    flex: 1;
-    // width: 50%;
+    flex: 1 1 320px;
     display: flex;
     flex-direction: column;
     margin-bottom: 1rem;
-    // background: blue;
     justify-content: center;
     align-items: center;
+    gap: 1rem;
+    min-width: 0;
 }
 
 label {
     margin-bottom: 0.5rem;
+    font-weight: 600;
 }
 
 .listado {
     margin-bottom: 1rem;
-    width: '10%';
+    width: 100%;
+}
+
+/* Contenedor de la imagen */
+.preview-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Imagen responsiva */
+.preview-img {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    border-radius: 12px;
+    object-fit: contain;
+}
+
+/* Para el listbox */
+:host ::ng-deep .p-listbox {
+    width: 100% !important;
+    margin-bottom: 1rem;
+}
+
+:host ::ng-deep .p-fileupload {
+    width: 100%;
+}
+
+:host ::ng-deep .p-fileupload .p-button {
+    width: 100%;
+}
+
+/* Botón guardar */
+button[type="submit"] {
+    width: fit-content;
+    min-width: 160px;
+}
+
+/* Tablet y móvil */
+@media (max-width: 768px) {
+    .formulario-contenido {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .contenido,
+    .contenido-img {
+        width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .contenido input {
+        width: 100%;
+    }
+
+    .preview-img {
+        max-width: 100%;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+    }
+
+    .grupo-principal {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .grupo-principal .contenido,
+    .grupo-principal .contenido-img {
+        width: 100%;
+        flex: 1 1 100%;
+    }
+
+    /* orden en móvil */
+    .contenido {
+        order: 1;
+    }
+
+    .contenido-img {
+        order: 2;
+    }
+
+    /* botón guardar abajo */
+    .btn-guardar {
+        width: 100%;
+        margin-top: 1rem;
+    }
+}
+
+.grupo-principal {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* columnas */
+.grupo-principal .contenido {
+    flex: 1 1 400px;
+    min-width: 0;
+}
+
+.grupo-principal .contenido-img {
+    flex: 1 1 320px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }

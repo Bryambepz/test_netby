@@ -150,7 +150,7 @@ export class CrearProductoComponent implements OnInit{
   cargarImagen(event: FileUploadEvent) {
     // console.log("el event", event);
     const original = event.originalEvent as  HttpResponse<any>;
-    // console.log("origjn", original!.body.imageUrl);
+    console.log("origjn", original!.body.imageUrl);
     
     this.nombreTemporal = original!.body.imageUrl;
     Swal.fire({
@@ -178,7 +178,7 @@ export class CrearProductoComponent implements OnInit{
   obtenerProductoActualizar(id: number){
     this.productoService.obtenerProductoPorId(id).subscribe({
       next: (value) => {
-        // console.log("el prid", value);
+        console.log("el prid", value);
         
         this.productoForm.patchValue(value);
         var categoria: Categoria = this.productoForm.get('categoria')?.value as Categoria;

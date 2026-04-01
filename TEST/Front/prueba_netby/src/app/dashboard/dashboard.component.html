@@ -1,27 +1,41 @@
 <div class="container">
-    <aside class="sidebar">
-        <nav>
-            <a routerLink="home" routerLinkActive="active">Inicio</a>
+    <!-- Botón hamburguesa solo en móvil -->
+    <button class="menu-toggle" (click)="toggleMenu()">
+        ☰
+    </button>
 
-            <a routerLink="producto" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+    <!-- Fondo oscuro al abrir menú en móvil -->
+    <div class="overlay" *NgIf="menuAbierto" (click)="cerrarMenu()"></div>
+
+    <aside class="sidebar" [class.sidebar-open]="menuAbierto">
+        <nav>
+            <a routerLink="home" routerLinkActive="active" (click)="cerrarMenu()">Inicio</a>
+
+            <a routerLink="producto" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
+                (click)="cerrarMenu()">
                 Producto
             </a>
             <ul class="submenu">
-                <li><a routerLink="producto/productos-crear" routerLinkActive="active">Crear</a></li>
-                <li><a routerLink="producto/productos-ver" routerLinkActive="active">Ver</a></li>
-                <li><a routerLink="producto/productos-categorias" routerLinkActive="active">Categorias</a></li>
+                <li><a routerLink="producto/productos-crear" routerLinkActive="active" (click)="cerrarMenu()">Crear</a>
+                </li>
+                <li><a routerLink="producto/productos-ver" routerLinkActive="active" (click)="cerrarMenu()">Ver</a></li>
+                <li><a routerLink="producto/productos-categorias" routerLinkActive="active"
+                        (click)="cerrarMenu()">Categorias</a></li>
             </ul>
 
-            <!-- <a routerLink="producto" routerLinkActive="active">Productos</a> -->
-            <a routerLink="transaccion" routerLinkActive="active"  [routerLinkActiveOptions]="{ exact: false }">
+            <a routerLink="transaccion" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
+                (click)="cerrarMenu()">
                 Transacciones
             </a>
             <ul class="submenu">
-                <li><a routerLink="transaccion/transaccion-crear" routerLinkActive="active">Crear</a></li>
-                <li><a routerLink="transaccion/transaccion-ver" routerLinkActive="active">Ver</a></li>
+                <li><a routerLink="transaccion/transaccion-crear" routerLinkActive="active"
+                        (click)="cerrarMenu()">Crear</a></li>
+                <li><a routerLink="transaccion/transaccion-ver" routerLinkActive="active" (click)="cerrarMenu()">Ver</a>
+                </li>
             </ul>
         </nav>
     </aside>
+
     <main class="content">
         <div class="tarjeta-contenido">
             <router-outlet></router-outlet>
