@@ -1,88 +1,183 @@
---DROP SCHEMA PRODUCTO;
---DROP SCHEMA TRANSACCION;
---DROP USER netby_user;
-USE master;
-GO
-CREATE LOGIN netby_user WITH PASSWORD = 'mSGAifYo@vQ2P!NFhAy';
-GO
-CREATE DATABASE netby_test;
-GO
-USE netby_test;
-GO
-CREATE USER netby_user FOR LOGIN netby_user;
-ALTER ROLE db_owner ADD MEMBER netby_user;
-SELECT name, type_desc FROM sys.database_principals WHERE name = 'netby_user';
-GO
-CREATE SCHEMA PRODUCTO;
-GO
---CREATE SCHEMA SUJETO;
-GO
-CREATE SCHEMA TRANSACCION;
-GO
-CREATE TABLE PRODUCTO.CATEGORIA (
-	ID int NOT NULL IDENTITY(1,1),
-	NOMBRE nvarchar(250) COLLATE Latin1_General_CI_AS NOT NULL ,
-	ESTADO bit NOT NULL,
-	CONSTRAINT PK_CATEGORIA PRIMARY KEY(ID)
+--drop schema producto;
+--drop schema transaccion;
+--drop user netby_user;
+-- use master;
+-- go
+-- create login netby_user with password = 'msgaifyo@vq2p!nfhay';
+-- go
+-- create database netby_test;
+-- go
+use gestion_reserva;
+go
+-- create user netby_user for login netby_user;
+-- alter role db_owner add member netby_user;
+-- select name, type_desc from sys.database_principals where name = 'netby_user';
+-- go
+create schema producto;
+go
+create schema sujeto;
+go
+-- create schema transaccion;
+go
+
+create table producto.pr_categoria (
+	cat_id int not null identity(1,1),
+	cat_nombre nvarchar(250) collate latin1_general_ci_as not null ,
+	cat_estado bit not null,
+	constraint pk_categoria primary key(cat_id)
 );
 
-CREATE TABLE PRODUCTO.PRODUCTOS (
-	ID INT NOT NULL IDENTITY(1,1),
-	NOMBRE NVARCHAR(250) COLLATE Latin1_General_CI_AS NOT NULL,
-	DESCRIPCION NVARCHAR(500) COLLATE Latin1_General_CI_AS NOT NULL,
-	IMAGEN NVARCHAR(250) COLLATE Latin1_General_CI_AS NOT NULL,
-	PRECIO DECIMAL(6,4) NOT NULL,
-	STOCK INT NOT NULL,
-	CATEGORIA_ID INT NOT NULL,
-	ESTADO BIT NOT NULL,
-	CONSTRAINT PK_PRODUCTO PRIMARY KEY(ID),
-	CONSTRAINT FK_PRODUCTO_CATEGORIA FOREIGN KEY (CATEGORIA_ID) REFERENCES PRODUCTO.CATEGORIA(ID)
+create table producto.pr_tipo_estado_producto (
+	tep_id int not null identity(1,1),
+	tep_nombre nvarchar(250) collate latin1_general_ci_as not null,
+	tep_estado bit not null,
+	constraint pk_tipo_estado_producto primary key(tep_id),
 );
 
-
---CREATE TABLE SUJETO.ROL (
---	ID INT NOT NULL IDENTITY(1,1),
---	NOMBRE NVARCHAR(100) NOT NULL,
---	ESTADO BIT NOT NULL
---	CONSTRAINT PK_ROL PRIMARY KEY (ID)
---);
---
---CREATE TABLE SUJETO.USUARIO (
---	ID INT NOT NULL IDENTITY (1,1),
---	NOMBRE NVARCHAR(250) COLLATE Latin1_General_CI_AS NOT NULL ,
---	USUARIO NVARCHAR(250) COLLATE Latin1_General_CI_AS NOT NULL ,
---	CLAVE NVARCHAR(250) COLLATE Latin1_General_CI_AS NOT NULL ,
---	ROL_ID INT NOT NULL,
---	ESTADO BIT NOT NULL,
---	CONSTRAINT PK_USUARIO PRIMARY KEY (ID),
---	CONSTRAINT FK_USUARIO_ROL FOREIGN KEY (ROL_ID) REFERENCES SUJETO.ROL (ID)
---);
-
-
-CREATE TABLE TRANSACCION.TIPO_TRANSACCION (
-	ID INT NOT NULL IDENTITY(1,1),
-	NOMBRE NVARCHAR(250) COLLATE Latin1_General_CI_AS NOT NULL ,
-	ESTADO BIT NOT NULL
-	CONSTRAINT PK_TIPO_TRANSACCION PRIMARY KEY (ID)
+create table producto.pr_producto (
+	pr_id int not null identity(1,1),
+	pr_nombre nvarchar(250) collate latin1_general_ci_as not null,
+	pr_descripcion nvarchar(500) collate latin1_general_ci_as not null,
+	pr_imagen nvarchar(250) collate latin1_general_ci_as not null,
+	pr_precio decimal(6,4) not null,
+	pr_stock int not null,
+	pr_cat_id int not null
+	pr_activo bit not null,
+	constraint pk_producto primary key(pr_id),
+	constraint fk_producto_categoria foreign key (pr_cat_id) references producto.pr_categoria(cat_id)
 );
 
-CREATE TABLE TRANSACCION.TRANSACCIONES (
-	ID INT NOT NULL IDENTITY(1,1),
-	FECHA DATE NOT NULL,
-	CANTIDAD INT NOT NULL,
-	PRECIO_UNITARIO DECIMAL(6,4) NOT NULL,
-	PRECIO_TOTAL DECIMAL(6,4) NOT NULL,
-	DETALLE NVARCHAR(500) COLLATE Latin1_General_CI_AS NOT NULL ,
-	TIPO_TRANSACCION_ID INT NOT NULL,
-	PRODUCTO_ID INT NOT NULL,
-	ESTADO BIT NOT NULL,
---	USUARIO_ID INT NOT NULL,
-	CONSTRAINT PK_TRANSACCION PRIMARY KEY (ID),
-	CONSTRAINT FK_TRANSACCION_TIPO_TRANS FOREIGN KEY (TIPO_TRANSACCION_ID) REFERENCES TRANSACCION.TIPO_TRANSACCION (ID),
-	CONSTRAINT FK_TRANSACCION_PRODUCTO FOREIGN KEY (PRODUCTO_ID) REFERENCES PRODUCTO.PRODUCTOS (ID),
---	CONSTRAINT FK_TRANSACCION_USUARIO FOREIGN KEY (USUARIO_ID) REFERENCES SUJETO.USUARIO (ID),
+create table sujeto.su_rol (
+	rl_id int not null identity(1,1),
+	rl_nombre nvarchar(100) not null,
+	rl_estado bit not null
+	constraint pk_rol primary key (rl_id)
 );
 
-INSERT INTO TRANSACCION.TIPO_TRANSACCION (NOMBRE, ESTADO)
-VALUES('COMPRA', 1),
-('VENTA', 1);
+create table sujeto.su_usuario (
+	us_id int not null identity (1,1),
+	us_nombre nvarchar(250) collate latin1_general_ci_as not null ,
+	us_usuario nvarchar(250) collate latin1_general_ci_as not null ,
+	us_clave nvarchar(250) collate latin1_general_ci_as not null ,
+	us_fecha_ingreso datetime not null
+	us_rl_id int not null,
+	us_estado bit not null,
+	constraint pk_usuario primary key (us_id),
+	constraint fk_usuario_rol foreign key (us_rl_id) references sujeto.su_rol (rl_id)
+);
+
+create table sujeto.su_tipo_negocio (
+	tn_id int not null identity (1,1),
+	tn_nombre nvarchar(250) collate latin1_general_ci_as not null ,
+	tn_es_entrega bit not null,
+	tn_estado bit not null,
+	constraint pk_tipo_negocio primary key (tn_id),
+);
+
+create table sujeto.su_empresa (
+	em_id int not null identity (1,1),
+	em_nombre nvarchar(250) collate latin1_general_ci_as not null ,
+	em_identificacion nvarchar(13) not null ,
+	em_tn_id int not null,
+	em_fecha_ingreso datetime not null,
+	em_correo nvarchar(250) collate latin1_general_ci_as not null ,
+	em_estado bit not null,
+	constraint pk_empresa primary key (cl_id),
+	constraint fk_empresa_tipo_negocio foreign key (em_tn_id) references sujeto.su_tipo_negocio (tn_id)
+);
+
+create table sujeto.su_sucursal
+(
+	su_id int not null identity (1,1),
+	su_longitud decimal(9,6) not null,
+	su_latitud decimal(9,6) not null,
+	su_matriz bit not null,
+	su_telefono nvarchar(13) not null ,
+	su_direccion nvarchar(255) collate latin1_general_ci_as not null ,
+	su_em_id int not null,
+	su_estado bit not null,
+	su_fecha datetime not null,
+	constraint pk_sucursal primary key (su_id),
+	constraint fk_sucursal_cliente foreign key (su_em_id) references sujeto.su_empresa (em_id)
+)
+
+-- create table transaccion.tipo_transaccion (
+	-- id int not null identity(1,1),
+	-- nombre nvarchar(250) collate latin1_general_ci_as not null ,
+	-- estado bit not null
+	-- constraint pk_tipo_transaccion primary key (id)
+-- );
+
+-- create table transaccion.transacciones (
+	-- id int not null identity(1,1),
+	-- fecha date not null,
+	-- cantidad int not null,
+	-- precio_unitario decimal(6,4) not null,
+	-- precio_total decimal(6,4) not null,
+	-- detalle nvarchar(500) collate latin1_general_ci_as not null ,
+	-- tipo_transaccion_id int not null,
+	-- producto_id int not null,
+	-- estado bit not null,
+-- --	usuario_id int not null,
+	-- constraint pk_transaccion primary key (id),
+	-- constraint fk_transaccion_tipo_trans foreign key (tipo_transaccion_id) references transaccion.tipo_transaccion (id),
+	-- constraint fk_transaccion_producto foreign key (producto_id) references producto.productos (id),
+-- --	constraint fk_transaccion_usuario foreign key (usuario_id) references sujeto.usuario (id),
+-- );
+
+-- insert into transaccion.tipo_transaccion (nombre, estado)
+-- values('compra', 1),
+-- ('venta', 1);
+
+insert into sujeto.rol
+(
+	rl_nombre,
+	rl_estado,
+)
+values
+(
+	'SUPERADMIN',
+	1
+)
+
+insert into sujeto.rol
+(
+	rl_nombre,
+	rl_estado,
+)
+values
+(
+	'ADMIN',
+	1
+)
+
+DECLARE @w_id_rol int = 0;
+
+SELECT @w_id_rol = rl_id FROM usuario.rol rl where rl.rl_nombre = 'SUPERADMIN'
+
+if @w_id_rol != 0
+begin
+	insert into sujeto.usuario
+	(
+		us_nombre,
+		us_usuario,
+		us_clave,
+		us_rl_id
+		us_estado,
+	)
+	values
+	(
+		'BRYAM PARRA',
+		'bparrasp'
+		'',
+		@w_id_rol,
+		1
+	)
+
+	print 'USUARIO CREADO'
+
+end
+ELSE
+begin
+	print 'USUARIO NO CREADO, FALTA EL ROL'
+end
