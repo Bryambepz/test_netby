@@ -26,9 +26,9 @@
                 <p-image *ngIf="imgPrevisualizar != ''" [src]="imgPrevisualizar" alt="imagen del producto seleccionado"
                     width="350" [preview]="true" />
 
-                <p-fileUpload class="btn-upload" mode="basic" chooseLabel="Cargar Imagen" chooseIcon="pi pi-upload"
+                <p-fileUpload #fileUploader class="btn-upload" mode="basic" chooseLabel="Cargar Imagen" chooseIcon="pi pi-upload"
                     name="imagen" [url]="apiUrlImagen" accept="image/*" maxFileSize="50000000"
-                    (onUpload)="cargarImagen($event)" (onSelect)="seleccionaArchivo($event)">
+                    (onUpload)="cargarImagen($event)" (onSelect)="seleccionaArchivo($event)"  (onError)="errorCargaImagen($event)">
                 </p-fileUpload>
             </div>
         </div>

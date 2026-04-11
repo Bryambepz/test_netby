@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -10,7 +10,7 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { ListboxModule } from 'primeng/listbox';
 import { ImageModule } from 'primeng/image';
-import { FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
+import { FileUpload, FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
 import { Categoria } from '../../../../domain/categoria';
 import { CategoriaService } from '../../../../servicios/Categoria/categoria.service';
 import { environment } from '../../../../../environments/environment';
@@ -38,6 +38,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './crear-producto.component.scss',
 })
 export class CrearProductoComponent implements OnInit{
+  @ViewChild('fileUploader') fileUploader!: FileUpload;
   productoForm: FormGroup;
   categorias: Categoria[] = [];
   apiUrlImagen = environment.apiUrlM1 + 'productos/cargarImagen';
@@ -45,6 +46,8 @@ export class CrearProductoComponent implements OnInit{
 
   imgPrevisualizar: string | ArrayBuffer = "";
   esUpdate: boolean = false;
+
+  private url = environment.apiUrlM1 + "imagenes/";
 
   constructor(
     private fb: FormBuilder,
@@ -162,6 +165,19 @@ export class CrearProductoComponent implements OnInit{
 
   seleccionaArchivo(event: any) {
     const imgSeleccionada = event.files[0];
+
+    const limite = 100000000; // 100 MB
+
+    if (imgSeleccionada.size > limite) {
+      Swal.fire({
+        title: "Imagen pesada",
+        text: "La imagen supera el tamaño máximo permitido de 100 MB.",
+        icon: "error"
+      });
+      this.reiniciarUploader();
+      return;
+    }
+
     const leerImg = new FileReader();
     leerImg.onload = () => {
       this.imgPrevisualizar = leerImg.result ?? "";
@@ -173,6 +189,21 @@ export class CrearProductoComponent implements OnInit{
       text: "Presione nuevamente el boton de cargar para guardar el archivo",
       icon: "success"
     });
+  }
+
+  errorCargaImagen(event: any) {
+    Swal.fire({
+      title: "Imagen pesada",
+      text: "Cargue otro archivo cuyo peso sea mas liviano. Pruebe con otra imagen",
+      icon: "error"
+    });
+    this.reiniciarUploader();
+  }
+
+  reiniciarUploader() {
+    if (this.fileUploader) {
+      this.fileUploader.clear();
+    }
   }
 
   obtenerProductoActualizar(id: number){
@@ -187,7 +218,7 @@ export class CrearProductoComponent implements OnInit{
         this.productoForm.patchValue({
           categoria: categoria
         });
-        this.imgPrevisualizar = 'http://localhost:5196/api/imagenes/'+this.productoForm.get('imagen')?.value
+        this.imgPrevisualizar = this.url+this.productoForm.get('imagen')?.value
       }
     })
   }
