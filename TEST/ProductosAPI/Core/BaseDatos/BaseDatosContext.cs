@@ -56,7 +56,7 @@ public partial class BaseDatosContext : DbContext
                 .UseCollation("Latin1_General_CI_AS")
                 .HasColumnName("NOMBRE");
             entity.Property(e => e.Precio)
-                .HasColumnType("decimal(6, 4)")
+                .HasColumnType("decimal(18, 2)")
                 .HasColumnName("PRECIO");
             entity.Property(e => e.Stock).HasColumnName("STOCK");
 
@@ -93,10 +93,10 @@ public partial class BaseDatosContext : DbContext
             entity.Property(e => e.Estado).HasColumnName("ESTADO");
             entity.Property(e => e.Fecha).HasColumnName("FECHA");
             entity.Property(e => e.PrecioTotal)
-                .HasColumnType("decimal(6, 4)")
+                .HasColumnType("decimal(18, 2)")
                 .HasColumnName("PRECIO_TOTAL");
             entity.Property(e => e.PrecioUnitario)
-                .HasColumnType("decimal(6, 4)")
+                .HasColumnType("decimal(18, 2)")
                 .HasColumnName("PRECIO_UNITARIO");
             entity.Property(e => e.ProductoId).HasColumnName("PRODUCTO_ID");
             entity.Property(e => e.TipoTransaccionId).HasColumnName("TIPO_TRANSACCION_ID");
