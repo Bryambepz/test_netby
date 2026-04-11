@@ -17,10 +17,10 @@
 
   <ItemGroup>
     <Reference Include="Core">
-      <HintPath>..\..\ProductosAPI\Core\bin\Debug\net8.0\Core.dll</HintPath>
+      <HintPath>Libs\Core.dll</HintPath>
     </Reference>
     <Reference Include="Models">
-      <HintPath>..\..\ProductosAPI\Models\bin\Debug\net8.0\Models.dll</HintPath>
+      <HintPath>Libs\Models.dll</HintPath>
     </Reference>
   </ItemGroup>
 
