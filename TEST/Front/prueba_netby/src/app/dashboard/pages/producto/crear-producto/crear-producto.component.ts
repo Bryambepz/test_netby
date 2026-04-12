@@ -22,6 +22,11 @@ import { ProductoRequerimiento } from '../../../../domain/producto-requerimiento
 import { CommonModule } from '@angular/common';
 import { VerProductoComponent } from "../ver-producto/ver-producto.component";
 import { ActivatedRoute } from '@angular/router';
+import { CustomValidators } from '../../../../shared/validators/custom-validators';
+import { Formateadores } from '../../../../shared/validators/formateadores';
+import { ConfiguracionImagen } from '../../../../domain/interaces/ConfiguracionImagen';
+import { ImagenUtil } from '../../../../shared/Utils/ImagenUtil';
+import { ErrorControlComponent } from "../../../componentes/error-control/error-control.component";
 
 @Component({
   selector: 'app-crear-producto',
@@ -33,6 +38,7 @@ import { ActivatedRoute } from '@angular/router';
     ImageModule,
     FileUploadModule,
     CommonModule,
+    ErrorControlComponent
 ],
   templateUrl: './crear-producto.component.html',
   styleUrl: './crear-producto.component.scss',
@@ -46,8 +52,12 @@ export class CrearProductoComponent implements OnInit{
 
   imgPrevisualizar: string | ArrayBuffer = "";
   esUpdate: boolean = false;
+  archivoProcesado!: File;
+  FormateadoresClass = Formateadores;
 
+  errorControlValidador = CustomValidators;
   private url = environment.apiUrlM1 + "imagenes/";
+  private _configuracionImagen!: ConfiguracionImagen;
 
   constructor(
     private fb: FormBuilder,
@@ -58,20 +68,32 @@ export class CrearProductoComponent implements OnInit{
     this.cargarCategorias();
     this.productoForm = this.fb.group({
       id: [0],
-      nombre: ['', [Validators.required, Validators.pattern('[a-zA-Z ]+$')]],
+      nombre: ['', [Validators.required, CustomValidators.nombre()]],
       descripcion: [
         '',
-        [Validators.required, Validators.pattern('[a-zA-Z0-9 ]+$')],
+        [Validators.required, CustomValidators.textoCaracteresEspeciales()],
       ],
       categoria: [
         '',
         [Validators.required],
       ],
       imagen: [''],
-      precio: [0.0, [Validators.required, Validators.pattern('^\\d{1,6}(.\\d{1,4})?$'), this.mayorQueCero]],
-      stock: [0, [Validators.required, Validators.pattern('[0-9 ]+$'), this.mayorQueCero]],
+      precio: ['0.0', [Validators.required, Validators.pattern('^\\d{1,6}(.\\d{1,4})?$'), this.mayorQueCero]],
+      stock: [0, [Validators.required, Validators.pattern('^[0-9 ]+$'), this.mayorQueCero]],
       estado: [true],
     });
+
+    this._configuracionImagen = {
+      maxPesoMB: 1,
+      maxAnchoCuadrada: 500,
+      maxAltoCuadrada: 500,
+      maxAnchoHorizontal: 880,
+      maxAltoHorizontal: 520,
+      maxAnchoVertical: 520,
+      maxAltoVertical: 880,
+      formatoSalida: 'image/webp',
+      calidad: 0.8
+    };
   }
 
   ngOnInit(): void {
@@ -150,45 +172,103 @@ export class CrearProductoComponent implements OnInit{
     });
   }
 
-  cargarImagen(event: FileUploadEvent) {
-    // console.log("el event", event);
-    const original = event.originalEvent as  HttpResponse<any>;
-    console.log("origjn", original!.body.imageUrl);
-    
-    this.nombreTemporal = original!.body.imageUrl;
-    Swal.fire({
-      title: "Imagen cargada",
-      // text: "Presione nuevamente el boton de cargar para guardar el archivo",
-      icon: "success"
-    });
-  }
+  subirImagenManual(): void {
+    if (!this.archivoProcesado) {
+      Swal.fire({
+        title: 'Sin imagen',
+        text: 'Primero selecciona una imagen válida.',
+        icon: 'warning'
+      });
+      return;
+    }
 
-  seleccionaArchivo(event: any) {
+    const formData = new FormData();
+    formData.append('imagen', this.archivoProcesado);
+
+    this.productoService.cargarImagen(formData).subscribe({
+      next: (resp) => {
+        this.nombreTemporal = resp.imageUrl;
+
+        Swal.fire({
+          title: 'Imagen cargada',
+          icon: 'success'
+        });
+
+      },
+      error: () => {
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo subir la imagen.',
+          icon: 'error'
+        });
+      }
+    })
+  }  
+
+  // cargarImagen(event: FileUploadEvent) {
+  //   // console.log("el event", event);
+  //   const original = event.originalEvent as  HttpResponse<any>;
+  //   console.log("origjn", original!.body.imageUrl);
+    
+  //   this.nombreTemporal = original!.body.imageUrl;
+  //   Swal.fire({
+  //     title: "Imagen cargada",
+  //     // text: "Presione nuevamente el boton de cargar para guardar el archivo",
+  //     icon: "success"
+  //   });
+  // }
+
+  async seleccionaArchivo(event: any) {
     const imgSeleccionada = event.files[0];
 
-    const limite = 100000000; // 100 MB
+    if (!imgSeleccionada) {
+      return;
+    }
 
-    if (imgSeleccionada.size > limite) {
+    const formatosPermitidos = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/webp'
+    ];
+
+    if (!formatosPermitidos.includes(imgSeleccionada.type)) {
       Swal.fire({
-        title: "Imagen pesada",
-        text: "La imagen supera el tamaño máximo permitido de 100 MB.",
-        icon: "error"
+        title: 'Formato no permitido',
+        text: 'Solo se permiten imágenes JPG, JPEG, PNG o WEBP.',
+        icon: 'error'
       });
       this.reiniciarUploader();
       return;
     }
 
-    const leerImg = new FileReader();
-    leerImg.onload = () => {
-      this.imgPrevisualizar = leerImg.result ?? "";
-    }
-    leerImg.readAsDataURL(imgSeleccionada);
+    try {
+      const imagenProcesada = await ImagenUtil.procesarImagen(
+        imgSeleccionada,
+        this._configuracionImagen
+      );
 
-    Swal.fire({
-      title: "Imagen lista",
-      text: "Presione nuevamente el boton de cargar para guardar el archivo",
-      icon: "success"
-    });
+      this.archivoProcesado = imagenProcesada;
+
+      const leerImg = new FileReader();
+      leerImg.onload = () => {
+        this.imgPrevisualizar = leerImg.result ?? "";
+      }
+      leerImg.readAsDataURL(imgSeleccionada);
+
+      Swal.fire({
+        title: "Imagen lista",
+        text: "Presione nuevamente el boton de cargar para guardar el archivo",
+        icon: "success"
+      });
+    } catch (error) {
+      Swal.fire({
+        title: 'Error al procesar imagen',
+        text: 'No se pudo optimizar la imagen seleccionada.',
+        icon: 'error'
+      });
+      this.reiniciarUploader();
+    }
   }
 
   errorCargaImagen(event: any) {

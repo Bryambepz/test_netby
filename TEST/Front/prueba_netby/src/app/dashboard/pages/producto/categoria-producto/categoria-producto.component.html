@@ -3,6 +3,12 @@
     <form [formGroup]="categoriaForm" (ngSubmit)="guardarCategoria()" class="formulario-contenido">
         <label for="nombre">Nombre</label>
         <input type="text" placeholder="Nombre Categoria" formControlName="nombre">
+        <app-error-control
+            [form]="categoriaForm"
+            controlName="nombre"
+            label="Nombre"
+            [class.input-error]="errorControlValidador.controlInvalido(categoriaForm, 'nombre')">
+        </app-error-control>
 
         <label for="estado">Estado</label>
         <input type="checkbox" name="estado" id="estado-categoria" formControlName="estado">

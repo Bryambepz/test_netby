@@ -5,20 +5,51 @@
             <div class="contenido">
                 <label for="nombre">Nombre</label>
                 <input type="text" placeholder="Nombre Producto" formControlName="nombre">
+                <app-error-control
+                    [form]="productoForm"
+                    controlName="nombre"
+                    label="Nombre"
+                    [class.input-error]="errorControlValidador.controlInvalido(productoForm, 'nombre')">
+                </app-error-control>
 
                 <label for="descripcion">Descripción</label>
                 <input type="text" placeholder="Descripción" formControlName="descripcion">
+                <app-error-control
+                    [form]="productoForm"
+                    controlName="descripcion"
+                    label="Descripción"
+                    [class.input-error]="errorControlValidador.controlInvalido(productoForm, 'descripcion')">
+                </app-error-control>
 
                 <label for="categoria">Categoría</label>
                 <!-- <input type="text" placeholder="Categoría" formControlName="categoria"> -->
                 <p-listbox [options]="categorias" formControlName="categoria" optionLabel="nombre" [filter]="true"
                     [style]="{ width: '50%', 'margin-bottom': '1rem' }" [listStyle]="{'max-height': '200px' }" />
+                <app-error-control
+                    [form]="productoForm"
+                    controlName="categoria"
+                    label="Categoría"
+                    [class.input-error]="errorControlValidador.controlInvalido(productoForm, 'categoria')">
+                </app-error-control>
+                
 
                 <label for="precio">Precio</label>
-                <input type="number" placeholder="precio" formControlName="precio">
+                <input type="number" placeholder="precio" formControlName="precio" (input)="FormateadoresClass.ingresaValorNumerico($event, productoForm, 'precio')">
+                <app-error-control
+                    [form]="productoForm"
+                    controlName="precio"
+                    label="Precio"
+                    [class.input-error]="errorControlValidador.controlInvalido(productoForm, 'precio')">
+                </app-error-control>
 
                 <label for="stock">Stock</label>
                 <input type="number" placeholder="stock" formControlName="stock">
+                <app-error-control
+                    [form]="productoForm"
+                    controlName="stock"
+                    label="Stock"
+                    [class.input-error]="errorControlValidador.controlInvalido(productoForm, 'stock')">
+                </app-error-control>
 
             </div>
             <div class="contenido-img">
@@ -26,9 +57,20 @@
                 <p-image *ngIf="imgPrevisualizar != ''" [src]="imgPrevisualizar" alt="imagen del producto seleccionado"
                     width="350" [preview]="true" />
 
-                <p-fileUpload #fileUploader class="btn-upload" mode="basic" chooseLabel="Cargar Imagen" chooseIcon="pi pi-upload"
-                    name="imagen" [url]="apiUrlImagen" accept="image/*" maxFileSize="50000000"
-                    (onUpload)="cargarImagen($event)" (onSelect)="seleccionaArchivo($event)"  (onError)="errorCargaImagen($event)">
+                <p-fileUpload 
+                    #fileUploader 
+                    class="btn-upload" 
+                    mode="basic" 
+                    chooseLabel="Cargar Imagen" 
+                    chooseIcon="pi pi-upload"
+                    name="imagen" 
+                    accept="image/*" 
+                    [customUpload]="true"
+                    [auto]="false"
+                    maxFileSize="50000000"
+                    (onSelect)="seleccionaArchivo($event)"
+                    (uploadHandler)="subirImagenManual()" 
+                    (onError)="errorCargaImagen($event)">
                 </p-fileUpload>
             </div>
         </div>

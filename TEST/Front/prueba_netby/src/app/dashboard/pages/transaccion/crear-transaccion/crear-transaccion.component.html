@@ -15,18 +15,18 @@
                 [style]="{ width: '100%', 'margin-bottom': '1rem' }" [listStyle]="{'max-height': '200px' }" (onChange)="SeleccionaProducto($event)" />
 
             <label for="precioUnitario">Precio Unitario</label>
-            <input type="number" placeholder="Precio Unitario" formControlName="precioUnitario" [disabled]="true">
+            <input type="number" placeholder="Precio Unitario" formControlName="precioUnitario" (input)="FormateadoresClass.ingresaValorNumerico($event, transaccionForm, 'precio')">
 
             <label for="cantidad">Cantidad</label>
             <input type="number" placeholder="cantidad" formControlName="cantidad" (input)="calculaPrecioTotal()">
             
             <label for="precioTotal">Precio Total</label>
-            <input type="number" placeholder="Precio Total" formControlName="precioTotal" [disabled]="true">
+            <input type="number" placeholder="Precio Total" formControlName="precioTotal" readonly>
             
             <label for="detalle">Detalle</label>
             <input type="text" placeholder="Detalle" formControlName="detalle">
 
-            <button type="submit" pButton pRipple label="GUARDAR" class="p-button-success" [disabled]="!transaccionForm.valid">
+            <button type="submit" pButton pRipple label="GUARDAR" class="p-button-success" >
             </button>
         </div>
         <!-- <div class="contenido-img">

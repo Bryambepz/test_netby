@@ -156,3 +156,7 @@ button[type="submit"] {
     justify-content: center;
     gap: 1rem;
 }
+
+:host:has(app-error-control.input-error) input {
+  margin-bottom: 0;
+}

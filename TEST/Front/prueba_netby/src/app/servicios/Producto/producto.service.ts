@@ -37,4 +37,8 @@ export class ProductoService {
   eliminarProducto(id: number): Observable<string>{
     return this.http.get<string>(this.url+`eliminarProducto/${id}`);
   }
+  
+  cargarImagen(data: FormData) {
+    return this.http.post<any>(this.url+'cargarImagen', data)
+  }
 }

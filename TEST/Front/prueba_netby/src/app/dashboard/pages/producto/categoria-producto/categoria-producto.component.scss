@@ -18,3 +18,7 @@ label {
         padding: 0.5rem;
     }
 }
+
+:host:has(app-error-control.input-error) input {
+  margin-bottom: 0;
+}

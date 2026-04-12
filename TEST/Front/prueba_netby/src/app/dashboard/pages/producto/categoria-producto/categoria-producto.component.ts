@@ -6,11 +6,13 @@ import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { CategoriaService } from '../../../../servicios/Categoria/categoria.service';
 import Swal from 'sweetalert2';
 import { LazyLoadEvent } from 'primeng/api';
+import { CustomValidators } from '../../../../shared/validators/custom-validators';
+import { ErrorControlComponent } from "../../../componentes/error-control/error-control.component";
 
 @Component({
   selector: 'app-categoria-producto',
   standalone: true,
-  imports: [ButtonModule, TableModule, ReactiveFormsModule,],
+  imports: [ButtonModule, TableModule, ReactiveFormsModule, ErrorControlComponent, ReactiveFormsModule],
   templateUrl: './categoria-producto.component.html',
   styleUrl: './categoria-producto.component.scss'
 })
@@ -22,11 +24,13 @@ export class CategoriaProductoComponent implements OnInit{
   totalCategorias: number = 0;
   cargando: boolean = false;
 
+  errorControlValidador = CustomValidators;
+
   constructor(private fb: FormBuilder,
     private categoriaService: CategoriaService
   ){
     this.categoriaForm = this.fb.group({
-      nombre: ['', [Validators.required, Validators.pattern('[a-zA-Z ]+$')]],
+      nombre: ['', [Validators.required, CustomValidators.nombre]],
       estado: [true]
     });
   }

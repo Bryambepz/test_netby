@@ -10,6 +10,7 @@ import { ProductoService } from '../../../../servicios/Producto/producto.service
 import { Transaccion } from '../../../../domain/transaccion';
 import Swal from 'sweetalert2';
 import { ActivatedRoute } from '@angular/router';
+import { Formateadores } from '../../../../shared/validators/formateadores';
 
 @Component({
   selector: 'app-crear-transaccion',
@@ -25,6 +26,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class CrearTransaccionComponent implements OnInit{
 
+  FormateadoresClass = Formateadores;
   transaccionForm: FormGroup;
 
   productos: Producto[] = [];
@@ -39,16 +41,17 @@ export class CrearTransaccionComponent implements OnInit{
   ){
      this.transaccionForm = this.fb.group({
       id: [0],
-          fecha: [Date.now, [Validators.required]],
+          fecha: [new Date(), [Validators.required]],
           tipoTransaccion: ['', [Validators.required]],
           producto: ['', [Validators.required]],
-          cantidad: [0, [Validators.required, Validators.pattern('[0-9 ]+$'), this.mayorQueCero]],
-          precioUnitario: [0, [Validators.required, Validators.pattern('^\\d{1,6}(.\d{1,4})?$'), this.mayorQueCero]],
-          precioTotal: [0, [Validators.required, Validators.pattern('^\\d{1,6}(.\d{1,4})?$'), this.mayorQueCero]],
+          cantidad: [, [Validators.required, Validators.pattern('[0-9 ]+$'), this.mayorQueCero]],
+          precioUnitario: [0, [Validators.required, Validators.pattern('^\\d{1,16}(\\.\\d{1,4})?$'), this.mayorQueCero]],
+          precioTotal: [0, [Validators.required, Validators.pattern('^\\d{1,16}(\\.\\d{1,4})?$'), this.mayorQueCero]],
           detalle: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9 ]+$')]],
      });
      this.obtenerTiposTransaccion();
   }
+  
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if ( id != null ) {
@@ -57,6 +60,7 @@ export class CrearTransaccionComponent implements OnInit{
       this.obtenerTransaccionActualizar(Number(id));
     }
     this.obtenerProductos();
+    this.calculaPrecioTotal();
   }
 
   mayorQueCero(control: AbstractControl): ValidationErrors | null {
@@ -124,13 +128,17 @@ export class CrearTransaccionComponent implements OnInit{
 
   calculaPrecioTotal(){
     this.transaccionForm.get('cantidad')?.valueChanges.subscribe(valor => {
-      // console.log('la cantidad es de :', valor);
-      const precioU = this.transaccionForm.get('precioUnitario')?.value;
-      // console.log("el precio", precioU);
+      const cantidad = Number(this.transaccionForm.get('cantidad')?.value || 0);
+      const precioU = Number(this.transaccionForm.get('precioUnitario')?.value || 0);
       
-      this.transaccionForm.patchValue({
-        precioTotal: valor * precioU
-      });
+      this.transaccionForm.get('precioTotal')?.setValue(cantidad * precioU, { emitEvent: false });
+    });
+
+    this.transaccionForm.get('precioUnitario')?.valueChanges.subscribe(() => {
+      const cantidad = Number(this.transaccionForm.get('cantidad')?.value || 0);
+      const precioU = Number(this.transaccionForm.get('precioUnitario')?.value || 0);
+
+      this.transaccionForm.get('precioTotal')?.setValue(cantidad * precioU, { emitEvent: false });
     });
   }
 
